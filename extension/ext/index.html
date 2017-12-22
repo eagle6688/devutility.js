@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>ext.js test -- extension/ext/index.html</title>
+    <script src="ext.js"></script>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+
+<body style="margin-left: 20px">
+    <h2>ext.js</h2>
+    <h3> 1. Date - subtract </h3>
+    <p>
+        <input id="txt-date-subtract-time1" type="text" value=""> -
+        <input id="txt-date-subtract-time2" type="text" value="">
+        <input id="btn-date-subtract" type="button" value="subtract days">
+    </p>
+    <p id="p-result-date-subtract"></p>
+    <script>
+        $('#btn-date-subtract').click(function () {
+            var time1 = new Date($('#txt-date-subtract-time1').val());
+            var time2 = new Date($('#txt-date-subtract-time2').val());
+            $('#p-result-date-subtract').text(time1.subtractDays(time2));
+        });
+    </script>
+    <h3> 2. Date - add </h3>
+    <p>
+        <input id="txt-date-add-time" type="text" value=""> +
+        <input id="txt-date-add-value" type="text" value="">
+        <input id="btn-date-addDays" type="button" value="add days">
+    </p>
+    <p id="p-result-date-add"></p>
+    <script>
+        $('#btn-date-addDays').click(function () {
+            var time1 = new Date($('#txt-date-add-time').val());
+            var days = ~~$('#txt-date-add-value').val();
+            var result = time1.addDays(days);
+            $('#p-result-date-add').text(result.toDateString());
+        });
+    </script>
+</body>
+
+</html>
