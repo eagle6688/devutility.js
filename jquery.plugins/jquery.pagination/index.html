@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>/jquery.plugins/jquery.pagination/index.html</title>
+    <link href="../../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="../../lib/jquery/jquery-1.11.1.min.js"></script>
+    <script src="jquery.pagination.js"></script>
+</head>
+<body>
+    <h2>jquery.pagination.js</h2>
+    <div id="pagination"></div>
+    <div id="pagination1"></div>
+    <script type="text/javascript">
+        $('#pagination').pagination({
+            totalRecords: 101,
+            visiblePages: 8,
+            onPageClick: function (pageIndex) {
+                console.log(pageIndex);
+            }
+        });
+
+        $('#pagination1').pagination({
+            totalRecords: 101,
+            firstButtonName: '',
+            firstButtonClass: '',
+            lastButtonName: '',
+            lastButtonClass: '',
+            ulClass: 'pagination'
+        });
+    </script>
+</body>
+</html>
