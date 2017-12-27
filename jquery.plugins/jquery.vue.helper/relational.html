@@ -25,44 +25,6 @@
                         <th style="min-width: 40px;">Name</th>
                         <th style="min-width: 60px;">NameID</th>
                         <th style="min-width: 40px;">CreateTime</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in data">
-                        <td>
-                            <input name="cb-list" type="checkbox" v-bind:value="item.MyID" />
-                        </td>
-                        <td>{{item.MyID}}</td>
-                        <td>{{item.Name}}</td>
-                        <td>{{item.NameID}}</td>
-                        <td>{{item.CreateTime}}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <span>{{data.length}}</span> records in this page.
-        </div>
-        <div id="pagination" class="pagination pagination-sm"></div>
-        <div>
-            <input id="btn-loadList" type="button" value="Load list" />
-            <input id="btn-loadListWithData" type="button" value="Load list with data" />
-        </div>
-        <div style="margin: 20px 0;">
-            <input id="btn-reloadWithDifferentURL" type="button" value="Reload with different url" />
-        </div>
-        <p>
-            <input id="btn-restore" type="button" value="restore vue object" />
-        </p>
-        <div id="div-relational-list">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th width="20px">
-                            <input id="cb-selectAll" type="checkbox" name="" />
-                        </th>
-                        <th style="min-width: 20px;">MyID</th>
-                        <th style="min-width: 40px;">Name</th>
-                        <th style="min-width: 60px;">NameID</th>
-                        <th style="min-width: 40px;">CreateTime</th>
                         <th style="min-width: 40px;">ParentID</th>
                     </tr>
                 </thead>
@@ -91,12 +53,21 @@
                             </tr>
                         </template>
                     </template>
-
                 </tbody>
             </table>
             <span>{{data.length}}</span> records in this page.
         </div>
         <div id="pagination" class="pagination pagination-sm"></div>
+        <div>
+            <input id="btn-loadList" type="button" value="Load list" />
+            <input id="btn-loadListWithData" type="button" value="Load list with data" />
+        </div>
+        <div style="margin: 20px 0;">
+            <input id="btn-reloadWithDifferentURL" type="button" value="Reload with different url" />
+        </div>
+        <p>
+            <input id="btn-restore" type="button" value="restore vue object" />
+        </p>
     </div>
     <script src="viewModel.js"></script>
     <script>
@@ -107,7 +78,7 @@
         });
 
         var vueHelper = $('#div-list').vueHelper({
-            url: '/data/listdata',
+            url: '/data/listrelationaldata',
             autoLoad: false,
             beforeLoadData: function (data) {
                 for (var i in data.data) {
@@ -117,6 +88,15 @@
             },
             onReload: function (data) {
                 $('#pagination').data('pagination').changeTotalRecords(data.count);
+            },
+            vueConfig: {
+                methods: {
+                    filter: function (id) {
+                        return this.data.filter(function (item) {
+                            return item.ParentID === id;
+                        });
+                    }
+                }
             }
         });
 
@@ -131,7 +111,7 @@
         });
 
         $('#btn-reloadWithDifferentURL').click(function () {
-            vueHelper.reload('url', '/data/listdata?length=52');
+            vueHelper.reload('url', '/data/listrelationaldata?length=52');
         });
 
         $('#btn-restore').click(function () {

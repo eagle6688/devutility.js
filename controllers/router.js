@@ -11,4 +11,6 @@ router.get('/data/list', dataController.list);
 
 router.get('/data/listdata', dataController.listdata);
 
+router.get('/data/listrelationaldata', dataController.listrelationaldata);
+
 module.exports = router;

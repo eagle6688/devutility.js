@@ -1,5 +1,5 @@
 /**
- * @license jquery.vue.helper.js v20171226
+ * @license jquery.vue.helper.js v20171227
  * (c) 2010-2017 Aldwin. https://github.com/eagle6688
  * License: MIT
  */
@@ -11,6 +11,7 @@
         requestType: 'GET',
         requestData: null,
         viewModel: null,
+        vueConfig: null,
         pageSize: 10,
         autoLoad: true,
         loadingDom: '', //Dom displays when data are loading.
@@ -52,10 +53,13 @@
     };
 
     Plugin.prototype._initVue = function () {
-        this.vue = new Vue({
+        var defaults = {
             el: this.selector,
             data: this.viewModel
-        });
+        };
+
+        var options = $.extend({}, this.options.vueConfig, defaults);
+        this.vue = new Vue(options);
     };
 
     Plugin.prototype._load = function () {
