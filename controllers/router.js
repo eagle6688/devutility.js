@@ -8,4 +8,7 @@ router.use(function (req, res, next) {
 });
 
 router.get('/data/list', dataController.list);
+
+router.get('/data/listdata', dataController.listdata);
+
 module.exports = router;

@@ -11,8 +11,6 @@
         requestType: 'GET',
         requestData: null,
         viewModel: null,
-        selectAllBtn: '#cb-selectAll',
-        selectItemsSelector: 'tbody input[type="checkbox"]',
         pageSize: 10,
         autoLoad: true,
         loadingDom: '', //Dom displays when data are loading.
@@ -30,6 +28,7 @@
     function Plugin(element, options) {
         this.element = element;
         this.$element = $(element);
+        this.selector = '#' + this.$element.attr('id');
         this.options = $.extend({}, defaults, options);
         this._init();
     }
@@ -41,22 +40,20 @@
         this._initData();
         this._initVue();
         this._load();
-        this._bind();
     };
 
     Plugin.prototype._initData = function () {
         this.pageIndex = 1;
-        this.selectedItems = [];
 
         this.viewModel = {
-            Data: [],
-            Count: 0
+            data: [],
+            count: 0
         };
     };
 
     Plugin.prototype._initVue = function () {
         this.vue = new Vue({
-            el: this.element,
+            el: this.selector,
             data: this.viewModel
         });
     };
@@ -69,7 +66,7 @@
 
     Plugin.prototype._loadData = function () {
         if (this.options.viewModel) {
-            this._setViewModel(this.options.viewModel);
+            this._loadViewModel(this.options.viewModel);
             this.options.viewModel = null;
         }
         else if (this.options.url) {
@@ -83,55 +80,21 @@
         this._displayDom(this.options.loadingDom);
 
         this._ajax(url, function (data) {
-            self._setViewModel(data);
+            self._loadViewModel(data);
             self._hideDom(self.options.loadingDom);
         });
     };
 
-    Plugin.prototype._setViewModel = function (data) {
+    Plugin.prototype._loadViewModel = function (data) {
         this._onReload(data);
         this._beforeLoadData(data);
-        this.viewModel = data;
+        this._setViewModel(data);
         this._afterLoadData(data);
     };
 
-    Plugin.prototype._bind = function () {
-        var self = this;
-
-        $(this.options.selectAllBtn).click(function () {
-            var index = 0;
-
-            if ($(this).is(':checked')) {
-                self.$element.find(self.options.selectItemsSelector).prop('checked', true);
-
-                for (index in self.viewModel.Data) {
-                    self._addSelectedItem(self.viewModel.Data()[index]);
-                }
-            }
-            else {
-                self.$element.find(self.options.selectItemsSelector).prop('checked', false);
-
-                for (index in self.viewModel.Data()) {
-                    self._removeSelectedItem(self.viewModel.Data()[index]);
-                }
-            }
-        });
-    };
-
-    Plugin.prototype._bindSelectItems = function () {
-        var self = this;
-
-        $(this.options.selectItemsSelector).click(function () {
-            var index = $(self.options.selectItemsSelector).index(this);
-            var item = self.viewModel.Data()[index];
-
-            if ($(this).is(':checked')) {
-                self._addSelectedItem(item);
-            }
-            else {
-                self._removeSelectedItem(item);
-            }
-        });
+    Plugin.prototype._setViewModel = function (data) {
+        this.vue.count = data.count;
+        this.vue.data = data.data;
     };
 
     Plugin.prototype._ajax = function (url, success) {
@@ -147,25 +110,6 @@
                 }
             }
         });
-    };
-
-    Plugin.prototype._addSelectedItem = function (item) {
-        for (var i = 0; i < this.selectedItems.length; i++) {
-            if (this.selectedItems[i] === item) {
-                return;
-            }
-        }
-
-        this.selectedItems.push(item);
-    };
-
-    Plugin.prototype._removeSelectedItem = function (item) {
-        for (var i = 0; i < this.selectedItems.length; i++) {
-            if (this.selectedItems[i] === item) {
-                this.selectedItems.splice(i, 1);
-                return;
-            }
-        }
     };
 
     Plugin.prototype._reloadOptions = function (options) {
@@ -200,8 +144,6 @@
     };
 
     Plugin.prototype._afterLoadData = function (data) {
-        this._bindSelectItems();
-
         if (this.options.afterLoadData) {
             this.options.afterLoadData(data);
         }
@@ -245,6 +187,49 @@
 
     //exported methods
 
+    var restore = function (vueObject) {
+        var result = null;
+        var type = Object.prototype.toString.call(vueObject);
+
+        switch (type) {
+            case '[object Array]':
+                result = toArray(vueObject);
+                break;
+
+            case '[object Object]':
+                result = toObject(vueObject);
+                break;
+
+            default:
+                result = vueObject;
+                break;
+        }
+
+        function toArray(vueArray) {
+            var array = [];
+
+            for (var index in vueArray) {
+                var item = restore(vueArray[index]);
+                array.push(item);
+            }
+
+            return array;
+        }
+
+        function toObject(vueObject) {
+            var obj = new Object();
+
+            for (var index in vueObject) {
+                var item = restore(vueObject[index]);
+                obj[index] = item;
+            }
+
+            return obj;
+        }
+
+        return result;
+    };
+
     Plugin.prototype.changePage = function (pageIndex) {
         this.event = events.changePage;
         this.pageIndex = pageIndex;
@@ -283,15 +268,11 @@
         return this.options[name];
     };
 
-    Plugin.prototype.getSelectedItems = function () {
-        return this.selectedItems;
+    $[pluginName] = {
+        restore: restore
     };
 
     $.fn[pluginName] = function (options) {
-        return this.each(function () {
-            if (!$.data(this, pluginName)) {
-                $.data(this, pluginName, new Plugin(this, options));
-            }
-        });
+        return new Plugin(this, options);
     };
 })(jQuery, window, document);
