@@ -49,6 +49,9 @@
         <div style="margin: 20px 0;">
             <input id="btn-reloadWithDifferentURL" type="button" value="Reload with different url" />
         </div>
+        <p>
+            <input id="btn-restore" type="button" value="restore vue object" />
+        </p>
     </div>
     <script src="viewModel.js"></script>
     <script>
@@ -84,6 +87,10 @@
 
         $('#btn-reloadWithDifferentURL').click(function () {
             vueHelper.reload('url', '/data/listdata?length=52');
+        });
+
+        $('#btn-restore').click(function () {
+            console.log($.vueHelper.restore(vueHelper.vue.data));
         });
     </script>
 </body>
