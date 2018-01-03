@@ -13,4 +13,6 @@ router.get('/data/listdata', dataController.listdata);
 
 router.get('/data/listrelationaldata', dataController.listrelationaldata);
 
+router.get('/data/showmore', dataController.showmore);
+
 module.exports = router;

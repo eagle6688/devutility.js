@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>jquery.vue.helper.js - /jquery.plugins/jquery.vue.helper/showmore.html</title>
+    <link href="../../content/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="../../content/libs/jquery/jquery-1.12.4.min.js"></script>
+    <script src="../../content/libs/vue/vue.js"></script>
+    <script src="jquery.vue.helper.js"></script>
+    <script src="../jquery.pagination/jquery.pagination3.0.js"></script>
+</head>
+
+<body>
+    <div style="margin: 0 10px 0 10px">
+        <h2>jquery.vue.helper.js</h2>
+        <div id="div-list">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th width="20px">
+                            <input id="cb-selectAll" type="checkbox" name="" />
+                        </th>
+                        <th style="min-width: 20px;">MyID</th>
+                        <th style="min-width: 40px;">Name</th>
+                        <th style="min-width: 40px;">CreateTime</th>
+                        <th style="min-width: 40px;">ParentID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="item in filter(0)">
+                        <tr>
+                            <td>
+                                <input name="cb-list" type="checkbox" v-bind:value="item.MyID" />
+                            </td>
+                            <td>{{item.MyID}}</td>
+                            <td>{{item.Name}}</td>
+                            <td>{{item.CreateTime}}</td>
+                            <td>{{item.ParentID}}</td>
+                        </tr>
+                        <template v-for="child in filter(item.MyID)">
+                            <tr style="background: #FFC1C1">
+                                <td>
+                                    <input name="cb-list" type="checkbox" v-bind:value="child.MyID" />
+                                </td>
+                                <td>{{child.MyID}}</td>
+                                <td>{{child.Name}}</td>
+                                <td>{{child.CreateTime}}</td>
+                                <td>{{child.ParentID}}</td>
+                            </tr>
+                        </template>
+                        <tr style="background: #FFEFD5">
+                            <td>
+                                <input type="button" value="show more" v-on:click="showmore(item.MyID)" />
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+            <span>{{data.length}}</span> records in this page.
+        </div>
+        <div id="pagination" class="pagination pagination-sm"></div>
+        <div>
+            <input id="btn-loadList" type="button" value="Load list" />
+        </div>
+    </div>
+    <script>
+        var pageSize = 10;
+        var listData = [];
+
+        function initListData(data) {
+            listData = [];
+
+            for (var i in data.data) {
+                if (data.data[i].ParentID == 0) {
+                    listData.push({
+                        id: data.data[i].MyID,
+                        pageIndex: 1
+                    });
+                }
+            }
+        }
+
+        function getFirstDatum(id) {
+            for (var i in listData) {
+                if (listData[i].id == id) {
+                    return listData[i];
+                }
+            }
+        }
+
+        $('#pagination').pagination({
+            onPageClick: function (pageIndex) {
+                vueHelper.changePage(pageIndex);
+            }
+        });
+
+        var vueHelper = $('#div-list').vueHelper({
+            url: '/data/listrelationaldata',
+            autoLoad: false,
+            beforeLoadData: function (data) {
+                initListData(data);
+            },
+            onReload: function (data) {
+                $('#pagination').data('pagination').changeTotalRecords(data.count);
+            },
+            vueConfig: {
+                methods: {
+                    filter: function (id) {
+                        return this.data.filter(function (item) {
+                            return item.ParentID === id;
+                        });
+                    },
+                    showmore: function (parentID) {
+                        var self = this;
+                        var firstDatum = getFirstDatum(parentID);
+                        firstDatum.pageIndex++;
+                        var url = '/data/showmore?pageIndex=' + firstDatum.pageIndex + '&pageSize=' + pageSize + '&parentID=' + parentID;
+
+                        $.getJSON(url, function (data) {
+                            for (var i in data) {
+                                self.data.push(data[i]);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        $('#btn-loadList').click(function () {
+            vueHelper.reload();
+        });
+    </script>
+</body>
+
+</html>

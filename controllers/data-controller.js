@@ -101,11 +101,13 @@ data.listrelationaldata = function (request, response, next) {
 
     for (var i = startIndex; i < endIndex; i++) {
         var childrenCount = Math.round(Math.random() * 10);
-        var item = new models.RelationalListItem(i + 1, 'Name' + i.toString());
+        var id = i + 1;
+        var item = new models.RelationalListItem(id, 'Name' + id.toString());
         array.push(item);
 
         for (var j = 0; j < childrenCount; j++) {
-            var child = new models.RelationalListItem(length + j + 1, 'Child Name' + (length + j).toString(), i + 1);
+            var childID = id * 10000 + j + 1;
+            var child = new models.RelationalListItem(childID, 'Child Name' + childID.toString(), id);
             array.push(child);
         }
     }
@@ -116,6 +118,39 @@ data.listrelationaldata = function (request, response, next) {
     };
 
     response.json(result);
+};
+
+data.showmore = function (request, response, next) {
+    var pageIndex = 0;
+    var pageSize = 10;
+    var parentID = 0;
+    var params = request.query;
+
+    if (params) {
+        if (params.pageIndex) {
+            pageIndex = ~~params.pageIndex;
+        }
+
+        if (params.pageSize) {
+            pageSize = ~~params.pageSize;
+        }
+
+        if (params.parentID) {
+            parentID = ~~params.parentID;
+        }
+    }
+
+    var array = [];
+    var startIndex = (pageIndex - 1) * pageSize;
+    var endIndex = pageIndex * pageSize;
+
+    for (var i = startIndex; i < endIndex; i++) {
+        var childID = parentID * 10000 + i + 1;
+        var child = new models.RelationalListItem(childID, 'Child Name' + childID.toString(), parentID);
+        array.push(child);
+    }
+
+    response.json(array);
 };
 
 module.exports = data;
