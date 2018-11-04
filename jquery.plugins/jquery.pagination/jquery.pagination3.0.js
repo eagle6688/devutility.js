@@ -17,6 +17,7 @@
         lastButtonName: 'Last', //Button's text of Last.
         lastButtonClass: 'last', //Button's style of Last.
         buttonClass: '', //Class for each button.
+        buttonAClass: '', //Class for lable <a> in button.
         disabledButtonClass: 'disabled', //Style of disabled button.
         currentButtonClass: 'active', //Style of current button.
         paginationClass: 'pagination pagination-sm', //Style of ul dom.
@@ -114,18 +115,23 @@
         }
     };
 
-    Plugin.prototype._createPageButton = function (text, className) {
-        var classes = [];
+    Plugin.prototype._createPageButton = function (text, btnClassName) {
+        var btnClasses = [];
+        var aClasses = [];
 
         if (this.options.buttonClass) {
-            classes.push(this.options.buttonClass);
+            btnClasses.push(this.options.buttonClass);
         }
 
-        if (className) {
-            classes.push(className);
+        if (btnClassName) {
+            btnClasses.push(btnClassName);
         }
 
-        return createButton(text, classes);
+        if (this.options.buttonAClass) {
+            aClasses.push(this.options.buttonAClass);
+        }
+
+        return createButton(text, btnClasses, aClasses);
     };
 
     Plugin.prototype._bind = function () {
@@ -320,20 +326,28 @@
         return result;
     };
 
-    var createButton = function (text, classes) {
+    var createButton = function (text, btnClasses, aClasses) {
         if (text === null || text === '' || text === undefined) {
             return null;
         }
 
         var $button = $('<li></li>');
 
-        if (classes) {
-            for (var index in classes) {
-                $button.addClass(classes[index]);
+        if (btnClasses) {
+            for (var index in btnClasses) {
+                $button.addClass(btnClasses[index]);
             }
         }
 
-        return $button.append($('<a href="javascript:void(0);"></a>').html(text));
+        var $aLink = $('<a href="javascript:void(0);"></a>').html(text);
+
+        if (aClasses) {
+            for (var index in aClasses) {
+                $aLink.addClass(aClasses[index]);
+            }
+        }
+
+        return $button.append($aLink);
     };
 
     var isButton = function ($button, text) {
