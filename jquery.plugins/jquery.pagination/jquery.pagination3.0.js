@@ -1,6 +1,6 @@
 ﻿(function ($, window, document, undefined) {
     var pluginName = 'pagination',
-        version = 'v3.0.20170817';
+        version = 'v3.1';
 
     var defaults = {
         totalRecords: 0,
@@ -16,6 +16,7 @@
         nextButtonClass: 'next', //Button's style of Next.
         lastButtonName: 'Last', //Button's text of Last.
         lastButtonClass: 'last', //Button's style of Last.
+        buttonClass: '', //Class for each button.
         disabledButtonClass: 'disabled', //Style of disabled button.
         currentButtonClass: 'active', //Style of current button.
         paginationClass: 'pagination pagination-sm', //Style of ul dom.
@@ -90,14 +91,14 @@
     };
 
     Plugin.prototype._fillPagination = function () {
-        this.$firstBtn = createButton(this.options.firstButtonName, this.options.firstButtonClass);
-        this.$prevBtn = createButton(this.options.prevButtonName, this.options.prevButtonClass);
+        this.$firstBtn = this._createPageButton(this.options.firstButtonName, this.options.firstButtonClass);
+        this.$prevBtn = this._createPageButton(this.options.prevButtonName, this.options.prevButtonClass);
         this.$pagination.append(this.$firstBtn, this.$prevBtn);
 
         this._fillPageButtons();
 
-        this.$nextBtn = createButton(this.options.nextButtonName, this.options.nextButtonClass);
-        this.$lastBtn = createButton(this.options.lastButtonName, this.options.lastButtonClass);
+        this.$nextBtn = this._createPageButton(this.options.nextButtonName, this.options.nextButtonClass);
+        this.$lastBtn = this._createPageButton(this.options.lastButtonName, this.options.lastButtonClass);
         this.$pagination.append(this.$nextBtn, this.$lastBtn);
     };
 
@@ -108,9 +109,23 @@
 
     Plugin.prototype._createPageButtons = function (start, end) {
         for (var i = start; i <= end; i++) {
-            var $pageButton = createButton(i).data(this.buttonDataName, i);
+            var $pageButton = this._createPageButton(i).data(this.buttonDataName, i);
             this.$pagination.append($pageButton);
         }
+    };
+
+    Plugin.prototype._createPageButton = function (text, className) {
+        var classes = [];
+
+        if (this.options.buttonClass) {
+            classes.push(this.options.buttonClass);
+        }
+
+        if (className) {
+            classes.push(className);
+        }
+
+        return createButton(text, classes);
     };
 
     Plugin.prototype._bind = function () {
@@ -305,15 +320,17 @@
         return result;
     };
 
-    var createButton = function (text, liClass) {
+    var createButton = function (text, classes) {
         if (text === null || text === '' || text === undefined) {
             return null;
         }
 
         var $button = $('<li></li>');
 
-        if (liClass) {
-            $button.addClass(liClass);
+        if (classes) {
+            for (var index in classes) {
+                $button.addClass(classes[index]);
+            }
         }
 
         return $button.append($('<a href="javascript:void(0);"></a>').html(text));
@@ -339,7 +356,7 @@
     };
 
     Plugin.prototype.reload = function () {
-        switch(arguments.length){
+        switch (arguments.length) {
             case 1:
                 if (this._needReloadOptions(arguments[0])) {
                     this._reloadOptions(arguments[0]);
