@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>form-modal /extension/form-modal/index.html</title>
+    <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="FormModal.js"></script>
+</head>
+
+<body>
+    <h3>Modal Test</h3>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#div-modal">
+        Launch Modal
+    </button>
+    <div id="div-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="scrollmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="scrollmodalLabel" class="modal-title">Modal Test</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-save">
+                        <div class="form-group">
+                            <label for="txt-name">Name</label>
+                            <input id="txt-name" name="name" type="text" class="form-control" placeholder="Name"
+                                maxlength="20">
+                        </div>
+                        <div class="form-group">
+                            <label for="txt-cellphone">Cellphone</label>
+                            <input id="txt-cellphone" name="cellphone" type="text" class="form-control" placeholder="Cellphone"
+                                maxlength="11">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="div-modal-save" type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var formModal = new FormModal({
+            modalSelector: '#div-modal',
+            formSelector: '#form-save',
+            saveBtnSelector: '#div-modal-save',
+            url: '/modal/save',
+            savedEvent: function (data, modal) {
+                console.log(data);
+                modal.hide();
+            }
+        });
+    </script>
+</body>
+
+</html>
