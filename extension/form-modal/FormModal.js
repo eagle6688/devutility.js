@@ -1,5 +1,5 @@
 /**
- * @license form-modal.js v20181106
+ * @license form-modal.js v20190217
  * (c) Aldwin. https://github.com/eagle6688
  * License: MIT
  */
@@ -8,12 +8,19 @@
     var pluginName = 'FormModal';
 
     var defaults = {
-        modalSelector: null,
-        formSelector: null,
-        saveBtnSelector: null,
-        url: null,
-        saveClick: function () {},
-        savedEvent: function (data, modal) {}
+        modalSelector: null, //Selector for modal.
+        formSelector: null, //Selector for form.
+        saveBtnSelector: null, //Selector for save button.
+        saveUrl: null, //Save url for form data.
+        loadFormDataBeforeShow: false, //Whether load form data or not before the modal shows.
+        formDataUrlFormat: null, //Url format of request form data, for example http://www.test.com?p1={0}&p2={1}.
+        formDataName: '', //Name of form data object name, for example 'name1.name2.name3'.
+        beforeRequestFormData: function (modal) {}, //Event before request form data, for example display loading image.
+        afterRequestFormData: function (modal) {}, //Event after request form data.
+        checkFormData: function (result, modal) {}, //Event for validating result data from formDataUrl, plugin does nothing if validation failed.
+        saveClick: function (modal) {}, //Event when click save button.
+        checkSaveResult: function (result, modal) {}, //Event for validating result data from save url, plugin does nothing if validation failed.
+        afterSave: function (data, modal) {} //Event after saved form data.
     };
 
     function Plugin(options) {
@@ -28,9 +35,9 @@
             return;
         }
 
-        this.$modal = $(this.options.modalSelector);
-        this.$form = $(this.options.formSelector);
-        this.$saveBtn = $(this.options.saveBtnSelector);
+        this.$modal = $(this.options.modalSelector).clone();
+        this.$form = this.$modal.find(this.options.formSelector);
+        this.$saveBtn = this.$modal.find(this.options.saveBtnSelector);
         this._bind();
     };
 
@@ -50,64 +57,145 @@
             return false;
         }
 
-        if (!this.options.url) {
-            var url = $(this.options.formSelector).attr('action');
+        if (!this.options.saveUrl) {
+            var saveUrl = $(this.options.formSelector).attr('action');
 
-            if (!url) {
-                console.error('"url" cannot be null!');
+            if (!saveUrl) {
+                console.error('"saveUrl" cannot be null!');
                 return false;
             }
 
-            this.options.url = url;
+            this.options.saveUrl = saveUrl;
         }
 
         return true;
     };
 
     Plugin.prototype._bind = function () {
-        this._bindSaveBtn();
-    };
-
-    Plugin.prototype._bindSaveBtn = function () {
         var self = this;
 
         this.$saveBtn.click(function () {
-            if (self.options.saveClick) {
-                self.options.saveClick();
-            }
-
-            self._ajax(self.$form.serialize());
+            self.options._saveClick(self);
         });
     };
 
-    Plugin.prototype._ajax = function (data) {
+    Plugin.prototype._save = function (data) {
         var self = this;
 
-        $.post(this.options.url, data, function (data) {
+        $.post(this.options.saveUrl, data, function (data) {
             self._savedEvent(data);
         });
     };
 
-    Plugin.prototype._savedEvent = function (data) {
-        var self = this;
+    Plugin.prototype._getFormDataFromResult = function (result) {
+        if (!this.options.formDataName) {
+            return result;
+        }
 
-        if (this.options.savedEvent) {
-            this.options.savedEvent(data, self);
+        var data = result[array[0]];
+        var array = this.options.formDataName.split('.');
+
+        for (var i = 1; i < array.length; i++) {
+            data = data[array[i]];
+        }
+
+        return data;
+    };
+
+    Plugin.prototype._setFields = function (model) {
+        if (!model) {
+            return;
+        }
+
+        this.$form.find(':input').each(function () {
+            var $this = $(this);
+            var name = $this.attr('name');
+
+            if (name) {
+                var value = model[name];
+
+                if (value) {
+                    $this.val(value);
+                }
+            }
+        });
+    };
+
+    Plugin.prototype._loadData = function (paramters) {
+        if (!this.options.loadFormDataBeforeShow) {
+            return;
+        }
+
+        if (this.options.beforeRequestFormData) {
+            this.options.beforeRequestFormData(this);
+        }
+
+        var self = this;
+        var url = this._getFormDataUrl(paramters);
+
+        $.getJSON(url, function (result) {
+            var data = self._getFormDataFromResult(result);
+            self._setFields(data);
+        });
+    };
+
+    Plugin.prototype._getFormDataUrl = function (paramters) {
+        var url = this.options.formDataUrlFormat;
+
+        for (var i = 0; i < paramters.length; i++) {
+            var regExp = new RegExp('{' + i + '}', 'i');
+            url = url.replace(regExp, paramters[i]);
+        }
+
+        return url;
+    };
+
+    Plugin.prototype._beforeShow = function (paramters) {
+        this._loadData();
+
+        if (this.options.beforeShow) {
+            this.options.beforeShow(this);
         }
     };
 
+    Plugin.prototype._afterShow = function () {
+        if (this.options.afterShow) {
+            this.options.afterShow(this);
+        }
+    };
+
+    Plugin.prototype._saveClick = function () {
+        if (this.options.saveClick) {
+            this.options.saveClick(this);
+        }
+
+        this._save(this.$form.serialize());
+    };
+
+    Plugin.prototype._savedEvent = function (data) {
+        if (this.options.savedEvent) {
+            this.options.savedEvent(data, this);
+        }
+    };
+
+    Plugin.prototype.clear = function () {
+        this.$form.find(':input').each(function () {
+            var $this = $(this);
+
+            if (!($this.attr('readonly') || $this.attr('disabled'))) {
+                $this.val('');
+            }
+        });
+    };
+
     Plugin.prototype.show = function () {
+        this._beforeShow(arguments);
         this.$modal.modal('show');
+        this._afterShow();
     };
 
     Plugin.prototype.hide = function () {
         this.$modal.modal('hide');
-    };
-
-    Plugin.prototype.setUrl = function (url) {
-        if (url) {
-            this.options.url = url;
-        }
     };
 
     window[pluginName] = Plugin;
