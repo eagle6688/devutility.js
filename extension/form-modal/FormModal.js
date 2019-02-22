@@ -1,5 +1,5 @@
 /**
- * @license form-modal.js v20190217
+ * @license form-modal.js v20190222
  * (c) Aldwin. https://github.com/eagle6688
  * License: MIT
  */
@@ -11,16 +11,15 @@
         modalSelector: null, //Selector for modal.
         formSelector: null, //Selector for form.
         saveBtnSelector: null, //Selector for save button.
-        saveUrl: null, //Save url for form data.
-        loadFormDataBeforeShow: false, //Whether load form data or not before the modal shows.
+        loadFormDataBeforeShow: false, //Whether load form data before modal shows.
         formDataUrlFormat: null, //Url format of request form data, for example http://www.test.com?p1={0}&p2={1}.
-        formDataName: '', //Name of form data object name, for example 'name1.name2.name3'.
-        beforeRequestFormData: function (modal) {}, //Event before request form data, for example display loading image.
-        afterRequestFormData: function (modal) {}, //Event after request form data.
-        checkFormData: function (result, modal) {}, //Event for validating result data from formDataUrl, plugin does nothing if validation failed.
-        saveClick: function (modal) {}, //Event when click save button.
-        checkSaveResult: function (result, modal) {}, //Event for validating result data from save url, plugin does nothing if validation failed.
-        afterSave: function (data, modal) {} //Event after saved form data.
+        formDataName: '', //Object name of form data response from formDataUrl, for example 'name1.name2.name3'.
+        saveUrl: null, //Save url for form data.
+        beforeShow: function (modal) {}, //Event before show modal, for example display loading image.
+        afterRequestFormData: function (result, modal) {}, //Event after request form data, FormModal does nothing if this method returns false, for example validating response from formDataUrl.
+        saveClick: function (modal) {}, //Event while clicking save button.
+        checkSaveResult: function (result, modal) {}, //Event for validating result data from save url, FormModal does nothing if validation failed.
+        afterSave: function (result, modal) {} //Event after saved form data.
     };
 
     function Plugin(options) {
@@ -75,18 +74,115 @@
         var self = this;
 
         this.$saveBtn.click(function () {
-            self.options._saveClick(self);
+            self._saveClick(self);
         });
     };
 
-    Plugin.prototype._save = function (data) {
+    /* Events start */
+
+    Plugin.prototype._beforeShow = function (paramters, callback) {
+        if (this.options.beforeShow) {
+            this.options.beforeShow(this);
+        }
+
+        this._loadFormData(paramters, callback);
+    };
+
+    Plugin.prototype._afterRequestFormData = function (result, modal) {
+        if (this.options.afterRequestFormData) {
+            return this.options.afterRequestFormData(result, modal);
+        }
+
+        return true;
+    };
+
+    Plugin.prototype._saveClick = function () {
         var self = this;
 
-        $.post(this.options.saveUrl, data, function (data) {
-            self._savedEvent(data);
+        if (this.options.saveClick) {
+            this.options.saveClick(this);
+        }
+
+        this._save(this.$form.serialize(), function (result) {
+            if (!self._checkSaveResult(result)) {
+                return;
+            }
+
+            self._afterSave(result);
         });
     };
 
+    Plugin.prototype._checkSaveResult = function (result) {
+        if (this.options.checkSaveResult) {
+            return this.options.checkSaveResult(result, this);
+        }
+
+        return true;
+    };
+
+    Plugin.prototype._afterSave = function (result) {
+        if (this.options.afterSave) {
+            this.options.afterSave(result, this);
+        }
+
+        this.hide();
+    };
+
+    /* Events end */
+
+    /**
+     * Load form data.
+     */
+    Plugin.prototype._loadFormData = function (paramters, callback) {
+        var self = this;
+        var url = this._getFormDataUrl(paramters);
+
+        if (!this.options.loadFormDataBeforeShow) {
+            callback();
+            return;
+        }
+
+        this._requestFormData(url, function (result) {
+            if (!self._afterRequestFormData(result, self)) {
+                return;
+            }
+
+            var data = self._getFormDataFromResult(result);
+            self._setForm(data);
+            callback();
+        });
+    };
+
+    /**
+     * Get form data url.
+     */
+    Plugin.prototype._getFormDataUrl = function (paramters) {
+        var url = this.options.formDataUrlFormat;
+
+        if (!paramters || paramters.length == 0) {
+            return url;
+        }
+
+        for (var i = 0; i < paramters.length; i++) {
+            var regExp = new RegExp('{' + i + '}', 'i');
+            url = url.replace(regExp, paramters[i]);
+        }
+
+        return url;
+    };
+
+    /**
+     * Request form data from url.
+     */
+    Plugin.prototype._requestFormData = function (url, callback) {
+        $.getJSON(url, function (result) {
+            callback(result);
+        });
+    };
+
+    /**
+     * Get form data from result.
+     */
     Plugin.prototype._getFormDataFromResult = function (result) {
         if (!this.options.formDataName) {
             return result;
@@ -102,8 +198,11 @@
         return data;
     };
 
-    Plugin.prototype._setFields = function (model) {
-        if (!model) {
+    /**
+     * Set form with data.
+     */
+    Plugin.prototype._setForm = function (data) {
+        if (!data) {
             return;
         }
 
@@ -112,7 +211,7 @@
             var name = $this.attr('name');
 
             if (name) {
-                var value = model[name];
+                var value = data[name];
 
                 if (value) {
                     $this.val(value);
@@ -121,61 +220,25 @@
         });
     };
 
-    Plugin.prototype._loadData = function (paramters) {
-        if (!this.options.loadFormDataBeforeShow) {
-            return;
-        }
-
-        if (this.options.beforeRequestFormData) {
-            this.options.beforeRequestFormData(this);
-        }
-
-        var self = this;
-        var url = this._getFormDataUrl(paramters);
-
-        $.getJSON(url, function (result) {
-            var data = self._getFormDataFromResult(result);
-            self._setFields(data);
+    /**
+     * Save form data.
+     */
+    Plugin.prototype._save = function (data, callback) {
+        $.post(this.options.saveUrl, data, function (data) {
+            callback(data);
         });
     };
 
-    Plugin.prototype._getFormDataUrl = function (paramters) {
-        var url = this.options.formDataUrlFormat;
+    /* Public methods */
 
-        for (var i = 0; i < paramters.length; i++) {
-            var regExp = new RegExp('{' + i + '}', 'i');
-            url = url.replace(regExp, paramters[i]);
-        }
-
-        return url;
+    Plugin.prototype.show = function () {
+        this._beforeShow(arguments, function () {
+            this.$modal.modal('show');
+        });
     };
 
-    Plugin.prototype._beforeShow = function (paramters) {
-        this._loadData();
-
-        if (this.options.beforeShow) {
-            this.options.beforeShow(this);
-        }
-    };
-
-    Plugin.prototype._afterShow = function () {
-        if (this.options.afterShow) {
-            this.options.afterShow(this);
-        }
-    };
-
-    Plugin.prototype._saveClick = function () {
-        if (this.options.saveClick) {
-            this.options.saveClick(this);
-        }
-
-        this._save(this.$form.serialize());
-    };
-
-    Plugin.prototype._savedEvent = function (data) {
-        if (this.options.savedEvent) {
-            this.options.savedEvent(data, this);
-        }
+    Plugin.prototype.hide = function () {
+        this.$modal.modal('hide');
     };
 
     Plugin.prototype.clear = function () {
@@ -188,15 +251,7 @@
         });
     };
 
-    Plugin.prototype.show = function () {
-        this._beforeShow(arguments);
-        this.$modal.modal('show');
-        this._afterShow();
-    };
-
-    Plugin.prototype.hide = function () {
-        this.$modal.modal('hide');
-    };
+    /* Public methods end */
 
     window[pluginName] = Plugin;
 })(jQuery, window, document);
