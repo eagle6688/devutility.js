@@ -11,9 +11,12 @@
 
 <body>
     <h3>Modal Test</h3>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#div-modal">
-        Launch Modal
-    </button>
+    <div class="row">
+        <button id="btn1" type="button" class="btn btn-primary">Launch Modal1</button>
+    </div>
+    <div class="row">
+        <button id="btn2" type="button" class="btn btn-primary">Launch Modal2</button>
+    </div>
     <div id="div-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="scrollmodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -45,15 +48,35 @@
         </div>
     </div>
     <script>
-        var formModal = new FormModal({
+        var formModal1 = new FormModal({
             modalSelector: '#div-modal',
             formSelector: '#form-save',
             saveBtnSelector: '#div-modal-save',
-            url: '/modal/save',
-            savedEvent: function (data, modal) {
+            saveUrl: '/modal/save',
+            afterSave: function (data, modal) {
                 console.log(data);
                 modal.hide();
             }
+        });
+
+        var formModal2 = new FormModal({
+            modalSelector: '#div-modal',
+            formSelector: '#form-save',
+            saveBtnSelector: '#div-modal-save',
+            loadFormDataBeforeShow: true,
+            saveUrl: '/modal/save',
+            afterSave: function (data, modal) {
+                console.log(data);
+                modal.hide();
+            }
+        });
+
+        $('#btn1').click(function () {
+
+        });
+
+        $('#btn2').click(function () {
+
         });
     </script>
 </body>

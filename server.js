@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require("body-parser");
-const router = require('./controllers/router')(express.Router());
+const router = require('./server/router')(express.Router());
 
 var appConfig = {
     port: 9000
@@ -15,6 +15,6 @@ app.use(bodyParser.urlencoded({
 
 app.use(router);
 
-var server = app.listen(appConfig.port, function () {
+app.listen(appConfig.port, function () {
     console.log('Start listening port: %d', appConfig.port);
 });
