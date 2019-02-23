@@ -1,7 +1,7 @@
 function OperationResult() {
     this.succeeded = true;
     this.message = '';
-    this.data = null;
+    this.data = {};
 
     if (arguments && arguments.length > 0) {
         if (arguments[0] != null) {

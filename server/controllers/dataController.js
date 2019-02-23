@@ -1,6 +1,6 @@
 const ListResponse = require('../models/ListResponse');
-const ListItem = require('./models/ListItem');
-const RelationalListItem = require('./models/RelationalListItem');
+const ListItem = require('../models/ListItem');
+const RelationalListItem = require('../models/RelationalListItem');
 
 module.exports = function (router) {
     router.get('/data/list', function (request, response, next) {

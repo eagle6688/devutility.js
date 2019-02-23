@@ -1,4 +1,4 @@
-const OperationResult = require('./models/OperationResult');
+const OperationResult = require('../models/OperationResult');
 
 module.exports = function (router) {
     router.get('/user/detail', function (request, response, next) {

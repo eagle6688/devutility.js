@@ -1,5 +1,5 @@
 /**
- * @license form-modal.js v20190222
+ * @license form-modal.js v20190223
  * (c) Aldwin. https://github.com/eagle6688
  * License: MIT
  */
@@ -16,9 +16,13 @@
         formDataName: '', //Object name of form data response from formDataUrl, for example 'name1.name2.name3'.
         saveUrl: null, //Save url for form data.
         beforeShow: function (modal) {}, //Event before show modal, for example display loading image.
-        afterRequestFormData: function (result, modal) {}, //Event after request form data, FormModal does nothing if this method returns false, for example validating response from formDataUrl.
+        afterRequestFormData: function (result, modal) { //Event after request form data, FormModal does nothing if this method returns false, for example validating response from formDataUrl.
+            return true;
+        },
         saveClick: function (modal) {}, //Event while clicking save button.
-        checkSaveResult: function (result, modal) {}, //Event for validating result data from save url, FormModal does nothing if validation failed.
+        checkSaveResult: function (result, modal) { //Event for validating result data from save url, FormModal does nothing if validation failed.
+            return true;
+        },
         afterSave: function (result, modal) {} //Event after saved form data.
     };
 
@@ -164,7 +168,7 @@
         }
 
         for (var i = 0; i < paramters.length; i++) {
-            var regExp = new RegExp('{' + i + '}', 'i');
+            var regExp = new RegExp('\\{' + i.toString() + '\\}', 'i');
             url = url.replace(regExp, paramters[i]);
         }
 
@@ -188,8 +192,8 @@
             return result;
         }
 
-        var data = result[array[0]];
         var array = this.options.formDataName.split('.');
+        var data = result[array[0]];
 
         for (var i = 1; i < array.length; i++) {
             data = data[array[i]];
@@ -232,8 +236,10 @@
     /* Public methods */
 
     Plugin.prototype.show = function () {
+        var self = this;
+
         this._beforeShow(arguments, function () {
-            this.$modal.modal('show');
+            self.$modal.modal('show');
         });
     };
 
