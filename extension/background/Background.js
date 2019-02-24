@@ -15,6 +15,7 @@
     function Plugin(options) {
         this.options = $.extend({}, defaults, options);
         this._init();
+        this._bind();
     }
 
     Plugin.prototype.constructor = Plugin;
@@ -24,8 +25,16 @@
         this.$element = $(document.getElementById(this.id));
 
         if (this.$element.length == 0) {
-            this._create_background();
+            this._createBackground();
         }
+    };
+
+    Plugin.prototype._bind = function () {
+        var self = this;
+
+        $(window).resize(function () {
+            self._setSize();
+        });
     };
 
     Plugin.prototype._getId = function () {
@@ -36,33 +45,36 @@
         return this.options.backgroundId;
     };
 
-    Plugin.prototype._create_background = function () {
+    Plugin.prototype._createBackground = function () {
         this.$element = $('<div></div>').attr('id', this.id);
 
         this.$element.css({
             display: 'none',
             zIndex: this.options.zIndex,
             backgroundColor: '#ccc',
-            width: this.getScrollWidth(),
-            height: this.getScrollHeight(),
             left: 0,
             top: 0,
-
             /*IE*/
             filter: 'alpha(opacity=50)',
-
             /*FF*/
             opacity: '0.5',
-
             /*FF IE7*/
             position: 'fixed !important',
-
             /*IE6*/
             position: 'absolute'
         });
 
-        this.$element.css('_top', 'expression(eval(document.compatMode && document.compatMode==\'CSS1Compat\') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2);');
+        this._setSize();
         $('body').append(this.$element);
+    };
+
+    Plugin.prototype._setSize = function () {
+        this.$element.css({
+            width: this.getScrollWidth(),
+            height: this.getScrollHeight()
+        });
+
+        this.$element.css('_top', 'expression(eval(document.compatMode && document.compatMode==\'CSS1Compat\') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 : document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2);');
     };
 
     /* Public methods */
@@ -77,23 +89,13 @@
 
     Plugin.prototype.show = function () {
         if (this.$element.css('display') == 'none') {
-            if (arguments && arguments.length > 0) {
-                this.$element.show(arguments);
-                return;
-            }
-
-            this.$element.show();
+            this.$element.show(arguments);
         }
     };
 
     Plugin.prototype.hide = function () {
         if (this.$element.css('display') != 'none') {
-            if (arguments && arguments.length > 0) {
-                this.$element.hide(arguments);
-                return;
-            }
-
-            this.$element.hide();
+            this.$element.hide(arguments);
         }
     };
 

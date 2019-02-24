@@ -2,151 +2,51 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>form-modal /extension/form-modal/index.html</title>
+    <title>Popuper - http://localhost:9000/extension/popuper/index.html</title>
     <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-        .row {
-            margin-top: 20px;
-        }
-    </style>
+    <link href="../../content/styles/common.css" rel="stylesheet" />
     <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
     <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
-    <script src="FormModal.js"></script>
+    <script src="../background/Background.js"></script>
+    <script src="Popuper.js"></script>
 </head>
 
 <body>
-    <h3>Modal Test</h3>
-    <div class="row">
-        <button id="btn-modal-for-add" type="button" class="btn btn-primary">Modal for add</button>
-    </div>
-    <div class="row">
-        <button id="btn-modal-for-failed-add" type="button" class="btn btn-primary">Modal for failed add</button>
-    </div>
-    <div class="row">
-        <button id="btn-modal-for-edit" type="button" class="btn btn-primary">Modal for edit</button>
-    </div>
-    <div class="row">
-        <button id="btn-modal-for-edit-with-failed-get-detail" type="button" class="btn btn-primary">
-            Modal for edit with failed get detail
-        </button>
-    </div>
-    <div id="div-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="scrollmodalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 id="scrollmodalLabel" class="modal-title">Modal Test</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="form-save">
-                        <div class="form-group">
-                            <label for="txt-name">Name</label>
-                            <input id="txt-name" name="name" type="text" class="form-control" placeholder="Name"
-                                maxlength="20">
-                        </div>
-                        <div class="form-group">
-                            <label for="txt-cellphone">Cellphone</label>
-                            <input id="txt-cellphone" name="cellphone" type="text" class="form-control" placeholder="Cellphone"
-                                maxlength="11">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button id="div-modal-save" type="button" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
+    <div class="container">
+        <div class="row">
+            <h3>Popuper</h3>
+        </div>
+        <div class="row">
+            <button id="btn-show" type="button" class="btn btn-primary">Show</button>
+            <button id="btn-showAll" type="button" class="btn btn-primary">Show All</button>
+        </div>
+        <div class="row">
+            <button id="btn-hide" type="button" class="btn btn-primary">Hide</button>
+            <button id="btn-hideAll" type="button" class="btn btn-primary">Hide All</button>
         </div>
     </div>
+    <div class="container" style="height: 1000px">
+    </div>
+    <img id="img-loading" src="loader.gif" style="display:none;">
     <script>
-        var detailUrl = '/user/detail?id={0}';
-        var saveUrl = '/user/save';
-
-        var afterRequestFormData = function (result, modal) {
-            console.log(result);
-
-            if (result.succeeded) {
-                return true;
-            }
-
-            alert(result.message);
-            return false;
-        };
-
-        var checkSaveResult = function (result, modal) {
-            console.log(result);
-
-            if (result.succeeded) {
-                return true;
-            }
-
-            alert(result.message);
-            return false;
-        };
-
-        var afterSave = function (result, modal) {
-            alert('Add success!');
-        };
-
-        var formModal4Add = new FormModal({
-            modalSelector: '#div-modal',
-            formSelector: '#form-save',
-            saveBtnSelector: '#div-modal-save',
-            saveUrl: saveUrl,
-            checkSaveResult: checkSaveResult,
-            afterSave: afterSave
+        var popuper = new Popuper({
+            selector: '#img-loading'
         });
 
-        $('#btn-modal-for-add').click(function () {
-            formModal4Add.show();
+        $('#btn-show').click(function () {
+            popuper.show();
         });
 
-        var formModal4FailedAdd = new FormModal({
-            modalSelector: '#div-modal',
-            formSelector: '#form-save',
-            saveBtnSelector: '#div-modal-save',
-            saveUrl: saveUrl + '?failed=1',
-            checkSaveResult: checkSaveResult,
-            afterSave: afterSave
+        $('#btn-showAll').click(function () {
+            popuper.showAll();
         });
 
-        $('#btn-modal-for-failed-add').click(function () {
-            formModal4FailedAdd.show();
+        $('#btn-hide').click(function () {
+            popuper.hide();
         });
 
-        var formModal4Edit = new FormModal({
-            modalSelector: '#div-modal',
-            formSelector: '#form-save',
-            saveBtnSelector: '#div-modal-save',
-            loadFormDataBeforeShow: true,
-            formDataUrlFormat: detailUrl,
-            formDataName: 'data',
-            saveUrl: saveUrl,
-            checkSaveResult: checkSaveResult,
-            afterSave: afterSave
-        });
-
-        $('#btn-modal-for-edit').click(function () {
-            formModal4Edit.show(123);
-        });
-
-        var formModal4EditWithFailedGetDetail = new FormModal({
-            modalSelector: '#div-modal',
-            formSelector: '#form-save',
-            saveBtnSelector: '#div-modal-save',
-            loadFormDataBeforeShow: true,
-            formDataUrlFormat: detailUrl + '&failed=1',
-            formDataName: 'data',
-            afterRequestFormData: afterRequestFormData,
-            saveUrl: saveUrl,
-            checkSaveResult: checkSaveResult,
-            afterSave: afterSave
-        });
-
-        $('#btn-modal-for-edit-with-failed-get-detail').click(function () {
-            formModal4EditWithFailedGetDetail.show();
+        $('#btn-hideAll').click(function () {
+            popuper.hideAll();
         });
     </script>
 </body>
