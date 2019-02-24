@@ -2,29 +2,35 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <title>form-modal /extension/form-modal/index.html</title>
+    <title>FormModal - http://localhost:9000/extension/form-modal/index.html</title>
     <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../../content/styles/common.css" rel="stylesheet" />
     <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
     <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../background/Background.js"></script>
+    <script src="../popuper/Popuper.js"></script>
     <script src="FormModal.js"></script>
 </head>
 
 <body>
-    <h3>Modal Test</h3>
-    <div class="row">
-        <button id="btn-modal-for-add" type="button" class="btn btn-primary">Modal for add</button>
-    </div>
-    <div class="row">
-        <button id="btn-modal-for-failed-add" type="button" class="btn btn-primary">Modal for failed add</button>
-    </div>
-    <div class="row">
-        <button id="btn-modal-for-edit" type="button" class="btn btn-primary">Modal for edit</button>
-    </div>
-    <div class="row">
-        <button id="btn-modal-for-edit-with-failed-get-detail" type="button" class="btn btn-primary">
-            Modal for edit with failed get detail
-        </button>
+    <div class="container">
+        <div class="row">
+            <h3>Modal</h3>
+        </div>
+        <div class="row">
+            <button id="btn-modal-for-add" type="button" class="btn btn-primary">Modal for add</button>
+        </div>
+        <div class="row">
+            <button id="btn-modal-for-failed-add" type="button" class="btn btn-primary">Modal for failed add</button>
+        </div>
+        <div class="row">
+            <button id="btn-modal-for-edit" type="button" class="btn btn-primary">Modal for edit</button>
+        </div>
+        <div class="row">
+            <button id="btn-modal-for-edit-with-failed-get-detail" type="button" class="btn btn-primary">
+                Modal for edit with failed get detail
+            </button>
+        </div>
     </div>
     <div id="div-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="scrollmodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -56,11 +62,21 @@
             </div>
         </div>
     </div>
+    <img id="img-loading" src="../../content/images/loading.gif" style="display:none;">
     <script>
         var detailUrl = '/user/detail?id={0}';
         var saveUrl = '/user/save';
 
+        var popuper = new Popuper({
+            selector: '#img-loading'
+        });
+
+        var beforeShow = function () {
+            popuper.showAll();
+        };
+
         var afterRequestFormData = function (result, modal) {
+            popuper.hideAll();
             console.log(result);
 
             if (result.succeeded) {
@@ -120,6 +136,8 @@
             formDataUrlFormat: detailUrl,
             formDataName: 'data',
             saveUrl: saveUrl,
+            beforeShow: beforeShow,
+            afterRequestFormData: afterRequestFormData,
             checkSaveResult: checkSaveResult,
             afterSave: afterSave
         });
