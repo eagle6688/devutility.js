@@ -1,5 +1,5 @@
 /**
- * @license form-modal.js v20190223
+ * @license FormModal.js v20190223
  * (c) Aldwin. https://github.com/eagle6688
  * License: MIT
  */

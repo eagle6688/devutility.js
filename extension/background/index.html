@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Background - http://localhost:9000/extension/background/index.html</title>
+    <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../content/styles/common.css" rel="stylesheet" />
+    <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="Background.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <h3>Background</h3>
+        </div>
+        <div class="row">
+            <button id="btn-show" type="button" class="btn btn-primary">Show</button>
+        </div>
+        <div class="row">
+            <button id="btn-hide" type="button" class="btn btn-primary">Hide</button>
+        </div>
+    </div>
+    <script>
+        var background = new Background();
+
+        $('#btn-show').click(function () {
+            background.show();
+        });
+
+        $('#btn-hide').click(function () {
+            background.hide();
+        });
+    </script>
+</body>
+
+</html>
