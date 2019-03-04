@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>/jquery.plugins/jquery.pagination.mobile/index.html</title>
+    <title>jquery.pagination.mobile - http://localhost:9000/jquery.plugins/jquery.pagination.mobile/index.html</title>
     <link href="index.min.css" rel="stylesheet" />
     <script src="../../content/libs/jquery/jquery-1.12.4.min.js"></script>
     <script src="jquery.pagination.mobile.js"></script>
@@ -13,7 +13,7 @@
 
 <body>
     <h2>jquery.pagination.mobile.js</h2>
-    <div id="paginationmobile" class="pager"></div>
+    <div id="div-pagination-mobile" class="pager"></div>
     <div>
         <p>
             <input id="btn-changePageIndex" type="button" value="change page index" />
@@ -21,7 +21,7 @@
         </p>
     </div>
     <script>
-        $('#paginationmobile').paginationmobile({
+        $('#div-pagination-mobile').paginationmobile({
             totalRecords: 101,
             onPageClick: function (pageIndex) {
                 console.log(pageIndex);
@@ -29,11 +29,11 @@
         });
 
         $('#btn-changePageIndex').click(function () {
-            $('#pager').data('paginationmobile').changePageIndex(8);
+            $('#div-pagination-mobile').data('paginationmobile').changePageIndex(8);
         });
 
         $('#btn-changeOptions').click(function () {
-            $('#pager').data('paginationmobile').reload({
+            $('#div-pagination-mobile').data('paginationmobile').reload({
                 pageIndex: 2,
                 totalRecords: 21
             });
