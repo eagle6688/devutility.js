@@ -1,5 +1,7 @@
 /**
- * @license DateSelector.js v20190304
+ * Plugin manage date selector include year, month and day.
+ * This plugin depend on jQuery and ext.js
+ * @license DateSelector.js v20190306
  * (c) Aldwin. https://github.com/eagle6688
  * License: MIT
  */
@@ -8,12 +10,12 @@
     var pluginName = 'DateSelector';
 
     var defaults = {
-        
-    };
-
-    var config = {
-        indexName: 'data-form-modal-index',
-        currentIndexName: 'data-form-modal-current-index'
+        yearSelector: '', //jQuery selector for year, for example '#selectId'.
+        monthSelector: '', //jQuery selector for month.
+        daySelector: '', //jQuery selector for day.
+        start: null, //Start date of DateSelector date range, support Date object or 'yyyy-MM-dd', default is null.
+        end: null, //End date of DateSelector date range, support Date object or 'yyyy-MM-dd', default is null.
+        initial: new Date() //Initial date of DateSelector, support Date object or 'yyyy-MM-dd', default is current date.
     };
 
     function Plugin(options) {
@@ -28,49 +30,30 @@
             return;
         }
 
-        this.$modal = $(this.options.modalSelector);
-
-        if (this.options.cloneModal) {
-            this.$modal = this.$modal.clone();
-        }
-
-        this.$form = this.$modal.find(this.options.formSelector);
-        this.$saveBtn = this.$modal.find(this.options.saveBtnSelector);
-        this._initIndex();
-        this._bind();
+        this.$yearSelector = $(this.options.yearSelector);
+        this.$monthSelector = $(this.options.monthSelector);
+        this.$daySelector = $(this.options.daySelector);
     };
 
     Plugin.prototype._verify = function () {
-        if (!this.options.modalSelector) {
-            console.error('"modalSelector" cannot be null!');
+        if (!this.options.yearSelector) {
+            console.error('"yearSelector" cannot be null!');
             return false;
         }
 
-        if (!this.options.formSelector) {
-            console.error('"formSelector" cannot be null!');
+        if (!this.options.monthSelector) {
+            console.error('"monthSelector" cannot be null!');
             return false;
         }
 
-        if (!this.options.saveBtnSelector) {
-            console.error('"saveBtnSelector" cannot be null!');
+        if (!this.options.daySelector) {
+            console.error('"daySelector" cannot be null!');
             return false;
-        }
-
-        if (!this.options.saveUrl) {
-            var saveUrl = $(this.options.formSelector).attr('action');
-
-            if (!saveUrl) {
-                console.error('"saveUrl" cannot be null!');
-                return false;
-            }
-
-            this.options.saveUrl = saveUrl;
         }
 
         return true;
     };
 
-    
     /* Public methods */
 
     /* Public methods end */

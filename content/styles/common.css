@@ -1,4 +1,23 @@
-﻿.row {
+﻿body {
+    font-family: 微软雅黑;
+}
+
+.main {
+    margin: 20px 20px 0 20px;
+}
+
+hr {
+    height: 1px;
+    border: none;
+    border-top: 1px solid Black;
+    margin: 20px 0 0 0;
+    *margin: 20px 0 -14px 0;
+    float: none;
+    *float: left;
+    display: block;
+}
+
+.form-row, .row {
     margin-top: 20px;
 }
 
@@ -8,25 +27,4 @@
 
 .marginTop10 {
     margin-top: 10px;
-}
-
-.main {
-    margin: 20px 20px 0 20px;
-}
-
-body 
-{
-    font-family: 微软雅黑;
-}
-
-hr
-{
-    height:1px;
-    border:none;
-    border-top:1px solid Black;
-    margin:0;
-    *margin:0 0 -14px 0;
-    float:none;
-    *float:left;
-    display:block;
 }

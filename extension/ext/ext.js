@@ -1,9 +1,33 @@
 /**
- * @license ext.js v20171222
+ * Javascript extensions libraries.
+ * @license ext.js v20190206
  * (c) 2010-2016 Aldwin. https://github.com/eagle6688
  * License: MIT
  */
 (function (window, document, undefined) {
+    var devExtConfig = {
+        date: {
+            serialize: {
+                yyyy: function (date) {
+                    return date.getFullYear();
+                },
+                MM: function (date) {
+                    return date.getMonth() + 1;
+                },
+                dd: function (date) {
+                    return date.getDate();
+                }
+            },
+            deserialize: {
+                yyyy: function (str, index) {
+
+                }
+            }
+        }
+    };
+
+    window.devExtConfig = devExtConfig;
+
     /**
      * Date extensions
      */
@@ -44,5 +68,12 @@
     Date.prototype.addDays = function (days) {
         var milliseconds = days * 24 * 60 * 60 * 1000;
         return this.add(milliseconds);
+    };
+
+    /**
+     * String extensions
+     */
+    String.prototype.toDate = function (format) {
+
     };
 })(window, document);
