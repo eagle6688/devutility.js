@@ -1,6 +1,6 @@
 /**
  * Plugin manage date selector include year, month and day.
- * This plugin depend on jQuery and ext.js
+ * This plugin depend on jQuery and devutility.js
  * @license DateSelector.js v20190306
  * (c) Aldwin. https://github.com/eagle6688
  * License: MIT
