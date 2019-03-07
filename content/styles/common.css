@@ -17,7 +17,8 @@ hr {
     display: block;
 }
 
-.form-row, .row {
+.form-row,
+.row {
     margin-top: 20px;
 }
 
@@ -31,4 +32,8 @@ hr {
 
 .marginTop20 {
     margin-top: 20px;
+}
+
+.du-input {
+    max-width: 260px;
 }

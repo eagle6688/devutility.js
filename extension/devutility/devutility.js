@@ -56,26 +56,26 @@
     };
 
     date.serialize = {
-        yyyy: function (date) {
-            return date.getFullYear();
+        yyyy: function (_date) {
+            return _date.getFullYear();
         },
-        MM: function (date) {
-            return date.getMonth() + 1;
+        MM: function (_date) {
+            return _date.getMonth() + 1;
         },
-        dd: function (date) {
-            return date.getDate();
+        dd: function (_date) {
+            return _date.getDate();
         },
-        HH: function (date) {
-            return date.getHours();
+        HH: function (_date) {
+            return _date.getHours();
         },
-        mm: function (date) {
-            return date.getMinutes();
+        mm: function (_date) {
+            return _date.getMinutes();
         },
-        ss: function (date) {
-            return date.getSeconds();
+        ss: function (_date) {
+            return _date.getSeconds();
         },
-        ccc: function (date) {
-            return date.getMilliseconds();
+        ccc: function (_date) {
+            return _date.getMilliseconds();
         }
     };
 
@@ -115,6 +115,26 @@
                 return date.extractToInt(str, format, 'ccc');
             }
         }
+    };
+
+    date.format = function (_date, format) {
+        var value = format;
+
+        for (var pattern in date.serialize) {
+            var regExp = new RegExp(pattern, 'g');
+            var patternValue = date.serialize[pattern].call(this, _date);
+            var patternStrValue = patternValue.toString();
+            var lengthSub = pattern.length - patternStrValue.length;
+
+            while (lengthSub > 0) {
+                patternStrValue = '0' + patternStrValue;
+                lengthSub--;
+            }
+
+            value = value.replace(regExp, patternStrValue);
+        }
+
+        return value;
     };
 
     date.parse = function (str, format) {

@@ -15,12 +15,32 @@
     <div class="main">
         <h3>devutility.js</h3>
         <hr />
-        <h5 class="marginTop20">date.parse(str, format)</h5>
+        <h5 class="marginTop20">date.format(date)</h5>
         <div class="form-row">
-            <div class="col">
-                <input id="txt-date-parse-format" type="text" value="yyyy-MM-dd" class="form-control" placeholder="Date Format">
+            <div class="col du-input">
+                <input id="txt-date-format-format" type="text" value="yyyy-MM-dd" class="form-control" placeholder="Date Format">
             </div>
             <div class="col">
+                <button id="btn-date-format" type="button" class="btn btn-primary">Parse</button>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col du-input">
+                <input type="text" value="2019-9-9" class="form-control" placeholder="Date Value" readonly>
+            </div>
+            <div class="col du-input">
+                <input id="txt-date-format-format1" type="text" value="yyyy-MM-dd" class="form-control" placeholder="Date Format">
+            </div>
+            <div class="col">
+                <button id="btn-date-format1" type="button" class="btn btn-primary">Parse</button>
+            </div>
+        </div>
+        <h5 class="marginTop20">date.parse(str, format)</h5>
+        <div class="form-row">
+            <div class="col du-input">
+                <input id="txt-date-parse-format" type="text" value="yyyy-MM-dd" class="form-control" placeholder="Date Format">
+            </div>
+            <div class="col du-input">
                 <input id="txt-date-parse-value" type="text" value="2019-09-09" class="form-control" placeholder="Date Value">
             </div>
             <div class="col">
