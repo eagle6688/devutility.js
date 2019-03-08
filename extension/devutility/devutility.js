@@ -8,6 +8,7 @@
     var devutility = {
         url: {},
         date: {},
+        array: {},
         string: {},
         select: {}
     };
@@ -34,6 +35,22 @@
     /* date */
 
     var date = {};
+
+    date.test = function (regExp, value) {
+        if (value == null || value == undefined || value.length == 0) {
+            return true;
+        }
+
+        if (typeof value == 'object') {
+            return true;
+        }
+
+        if (typeof value == 'string') {
+            return regExp.test(value);
+        }
+
+        return false;
+    };
 
     date.extract = function (str, format, pattern) {
         var index = format.indexOf(pattern);
@@ -75,19 +92,19 @@
             return date.addPrefix(_date.getMonth() + 1, 2);
         },
         dd: function (_date) {
-            return date.addPrefix(_date.getDate() + 1, 2);
+            return date.addPrefix(_date.getDate(), 2);
         },
         HH: function (_date) {
-            return date.addPrefix(_date.getHours() + 1, 2);
+            return date.addPrefix(_date.getHours(), 2);
         },
         mm: function (_date) {
-            return date.addPrefix(_date.getMinutes() + 1, 2);
+            return date.addPrefix(_date.getMinutes(), 2);
         },
         ss: function (_date) {
-            return date.addPrefix(_date.getSeconds() + 1, 2);
+            return date.addPrefix(_date.getSeconds(), 2);
         },
         ccc: function (_date) {
-            return date.addPrefix(_date.getSeconds() + 1, 3);
+            return date.addPrefix(_date.getMilliseconds(), 3);
         }
     };
 
@@ -175,9 +192,90 @@
         return new Date(params.year, params.month, params.day, params.hour, params.minute, params.second, params.millisecond);
     };
 
+    date.add = function (_date, milliseconds) {
+        var time = _date.getTime();
+        return new Date(time + milliseconds);
+    };
+
+    date.addHour = function (_date, hour) {
+        var milliseconds = hour * 60 * 60 * 1000;
+        return date.add(_date, milliseconds);
+    };
+
+    date.addDay = function (_date, day) {
+        var milliseconds = day * 24 * 60 * 60 * 1000;
+        return date.add(_date, milliseconds);
+    };
+
+    date.addMonth = function (_date, month) {
+        var params = {
+            year: _date.getFullYear(),
+            month: _date.getMonth() + month,
+            day: _date.getDate(),
+            hour: _date.getHours(),
+            minute: _date.getMinutes(),
+            second: _date.getSeconds(),
+            millisecond: _date.getMilliseconds()
+        };
+
+        var years = Math.floor(month / 12);
+
+        if (years > 0) {
+            params.year = params.year + years;
+        }
+
+        var months = month % 12;
+        params.month = params.month + months;
+        return new Date(params.year, params.month, params.day, params.hour, params.minute, params.second, params.millisecond);
+    };
+
+    date.addYear = function (_date, year) {
+        var params = {
+            year: _date.getFullYear() + year,
+            month: _date.getMonth(),
+            day: _date.getDate(),
+            hour: _date.getHours(),
+            minute: _date.getMinutes(),
+            second: _date.getSeconds(),
+            millisecond: _date.getMilliseconds()
+        };
+
+        return new Date(params.year, params.month, params.day, params.hour, params.minute, params.second, params.millisecond);
+    };
+
+    date.isLeapYear = function (year) {
+        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+            return true;
+        }
+
+        return false;
+    };
+
     devutility.date = date;
 
     /* date end */
+
+    /* array */
+
+    var array = {};
+
+    array.indexOf = function (_array, value) {
+        for (var i = 0; i < _array.length; i++) {
+            if (_array[i] == value) {
+                return i;
+            }
+        }
+
+        return -1;
+    };
+
+    array.contain = function (_array, value) {
+        return array.indexOf(_array, value) > -1;
+    };
+
+    devutility.array = array;
+
+    /* array end */
 
     /* string */
 
