@@ -55,27 +55,39 @@
         return parseInt(value);
     };
 
+    date.addPrefix = function (part, length) {
+        var value = part.toString();
+        var lengthSub = length - value.length;
+
+        while (lengthSub > 0) {
+            value = string.addPrefix(value, '0');
+            lengthSub--;
+        }
+
+        return value;
+    };
+
     date.serialize = {
         yyyy: function (_date) {
-            return _date.getFullYear();
+            return _date.getFullYear().toString();
         },
         MM: function (_date) {
-            return _date.getMonth() + 1;
+            return date.addPrefix(_date.getMonth() + 1, 2);
         },
         dd: function (_date) {
-            return _date.getDate();
+            return date.addPrefix(_date.getDate() + 1, 2);
         },
         HH: function (_date) {
-            return _date.getHours();
+            return date.addPrefix(_date.getHours() + 1, 2);
         },
         mm: function (_date) {
-            return _date.getMinutes();
+            return date.addPrefix(_date.getMinutes() + 1, 2);
         },
         ss: function (_date) {
-            return _date.getSeconds();
+            return date.addPrefix(_date.getSeconds() + 1, 2);
         },
         ccc: function (_date) {
-            return _date.getMilliseconds();
+            return date.addPrefix(_date.getSeconds() + 1, 3);
         }
     };
 
@@ -123,15 +135,7 @@
         for (var pattern in date.serialize) {
             var regExp = new RegExp(pattern, 'g');
             var patternValue = date.serialize[pattern].call(this, _date);
-            var patternStrValue = patternValue.toString();
-            var lengthSub = pattern.length - patternStrValue.length;
-
-            while (lengthSub > 0) {
-                patternStrValue = '0' + patternStrValue;
-                lengthSub--;
-            }
-
-            value = value.replace(regExp, patternStrValue);
+            value = value.replace(regExp, patternValue);
         }
 
         return value;
@@ -181,6 +185,20 @@
 
     string.contain = function (str, value) {
         return str.indexOf(value) > -1;
+    };
+
+    string.addPrefix = function (str, prefix, count) {
+        if (!count) {
+            count = 1;
+        }
+
+        var value = str;
+
+        for (var i = 0; i < count; i++) {
+            value = prefix + value;
+        }
+
+        return value;
     };
 
     devutility.string = string;
