@@ -1,5 +1,5 @@
 /**
- * Popuper.js v20190224
+ * Popuper.js v20190309
  * dependency: jQuery.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
@@ -9,7 +9,7 @@
 
     var defaults = {
         selector: '', //Selector for popup dom.
-        zIndex: 101, //zIndex for popup dom.
+        zIndex: 2001, //zIndex for popup dom.
         background: null //Background object.
     };
 
