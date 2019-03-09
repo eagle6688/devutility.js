@@ -21,7 +21,7 @@
 
     var config = {
         datePattern: 'yyyy-MM-dd',
-        datePatternRegExp: new RegExp('^\d{4}-\d{2}-\d{2}$', 'i'),
+        datePatternRegExp: new RegExp(/^\d{4}-\d{2}-\d{2}$/),
         monthWithDays31: [1, 3, 5, 7, 8, 10, 12],
         monthWithDays30: [4, 6, 9, 11]
     };
