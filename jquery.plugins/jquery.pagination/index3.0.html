@@ -3,27 +3,71 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>/jquery.plugins/jquery.pagination/index3.0.html</title>
-    <link href="../../content/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <script src="../../content/libs/jquery/jquery-1.12.4.min.js"></script>
+    <title>jquery.pagination3.0.js - http://localhost:9000/jquery.plugins/jquery.pagination/index3.0.html</title>
+    <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../content/styles/common.css" rel="stylesheet" />
+    <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
     <script src="jquery.pagination3.0.js"></script>
 </head>
 
 <body>
-    <h2>jquery.pagination3.0.js</h2>
-    <div id="pagination1"></div>
-    <div id="pagination2"></div>
-    <div>
-        <p>
-            <input id="btn-changePageSize" value="change page size" type="button" />
-            <input id="btn-changePageIndex" value="change page index" type="button" />
-            <input id="btn-changeOptions" value="change options" type="button" />
-        </p>
+    <div class="main">
+        <h3>jquery.pagination3.0.js</h3>
+        <hr />
+        <div id="pagination1" class="marginTop20"></div>
+        <div id="pagination2" class="marginTop20"></div>
+        <h5 class="marginTop20">Change page index</h5>
+        <div class="form-row">
+            <label class="col col-sm-1 col-form-label">PageIndex:</label>
+            <div class="col col-sm-1">
+                <input id="txt-input-page-index" type="text" value="8" class="form-control">
+            </div>
+            <div class="col">
+                <button id="btn-change-page-index" type="button" class="btn btn-primary">Change page index</button>
+            </div>
+        </div>
+        <h5 class="marginTop20">Change page size</h5>
+        <div class="form-row">
+            <label class="col col-sm-1 col-form-label">PageSize:</label>
+            <div class="col col-sm-1">
+                <input id="txt-input-page-size" type="text" value="20" class="form-control">
+            </div>
+            <div class="col">
+                <button id="btn-change-page-size" type="button" class="btn btn-primary">Change page size</button>
+            </div>
+        </div>
+        <h5 class="marginTop20">Change total records</h5>
+        <div class="form-row">
+            <label class="col col-sm-1 col-form-label">Total Records:</label>
+            <div class="col col-sm-1">
+                <input id="txt-input-total-records" type="text" value="50" class="form-control">
+            </div>
+            <div class="col">
+                <button id="btn-change-total-records" type="button" class="btn btn-primary">Change total records</button>
+            </div>
+        </div>
+        <h5 class="marginTop20">Change options</h5>
+        <div class="form-row card col-sm-4">
+            <code>
+                {
+                pageIndex: 2,
+                pageSize: 50,
+                totalRecords: 5000,
+                visiblePagesCount: 20
+                }
+            </code>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <button id="btn-change-options" type="button" class="btn btn-primary">Change options</button>
+            </div>
+        </div>
     </div>
     <script type="text/javascript">
         $('#pagination1').pagination({
             visiblePagesCount: 8,
             totalRecords: 101,
+            paginationClass: 'pagination pagination-sm',
             onPageClick: function (pageIndex) {
                 console.log(pageIndex);
             }
@@ -31,8 +75,6 @@
 
         $('#pagination2').pagination({
             totalRecords: 101,
-            buttonClass: 'asd qwe',
-            buttonAClass: 'zxc fgh',
             onPageClick: function (pageIndex) {
                 console.log(pageIndex);
             },
@@ -41,15 +83,22 @@
             }
         });
 
-        $('#btn-changePageSize').click(function () {
-            $('#pagination2').data('pagination').reload('pageSize', 20);
+        $('#btn-change-page-index').click(function () {
+            var pageIndex = ~~$('#txt-input-page-index').val();
+            $('#pagination2').data('pagination').reload('pageIndex', pageIndex);
         });
 
-        $('#btn-changePageIndex').click(function () {
-            $('#pagination2').data('pagination').reload('pageIndex', 8);
+        $('#btn-change-page-size').click(function () {
+            var pageSize = ~~$('#txt-input-page-size').val();
+            $('#pagination2').data('pagination').reload('pageSize', pageSize);
         });
 
-        $('#btn-changeOptions').click(function () {
+        $('#btn-change-total-records').click(function () {
+            var totalRecords = ~~$('#txt-input-total-records').val();
+            $('#pagination2').data('pagination').changeTotalRecords(totalRecords);
+        });
+
+        $('#btn-change-options').click(function () {
             $('#pagination2').data('pagination').reload({
                 pageIndex: 2,
                 pageSize: 50,
