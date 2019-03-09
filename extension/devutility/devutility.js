@@ -1,7 +1,6 @@
 /**
- * @license devutility.js v20190307
- * (c) Aldwin. https://github.com/eagle6688
- * License: MIT
+ * devutility.js v20190309
+ * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
 (function (window, document, undefined) {
@@ -10,7 +9,8 @@
         date: {},
         array: {},
         string: {},
-        select: {}
+        select: {},
+        options: {}
     };
 
     /* url */
@@ -321,6 +321,28 @@
     devutility.select = select;
 
     /* select end */
+
+    /* options */
+
+    var options = {};
+
+    options.isKVChanged = function (_options, name, value) {
+        return _options.hasOwnProperty(name) && _options[name] !== value;
+    };
+
+    options.isChanged = function (_options, newOptions) {
+        for (var name in newOptions) {
+            if (options.isKVChanged(_options, name, newOptions[name])) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    devutility.options = options;
+
+    /* options end */
 
     window.devutility = devutility;
 })(window, document);

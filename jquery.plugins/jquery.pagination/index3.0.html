@@ -7,6 +7,7 @@
     <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../../content/styles/common.css" rel="stylesheet" />
     <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../../extension/devutility/devutility.js"></script>
     <script src="jquery.pagination3.0.js"></script>
 </head>
 
@@ -85,12 +86,12 @@
 
         $('#btn-change-page-index').click(function () {
             var pageIndex = ~~$('#txt-input-page-index').val();
-            $('#pagination2').data('pagination').reload('pageIndex', pageIndex);
+            $('#pagination2').data('pagination').changePageIndex(pageIndex);
         });
 
         $('#btn-change-page-size').click(function () {
             var pageSize = ~~$('#txt-input-page-size').val();
-            $('#pagination2').data('pagination').reload('pageSize', pageSize);
+            $('#pagination2').data('pagination').changePageSize(pageSize);
         });
 
         $('#btn-change-total-records').click(function () {
