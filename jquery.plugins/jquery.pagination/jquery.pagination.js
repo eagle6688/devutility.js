@@ -1,334 +1,411 @@
-﻿;
+﻿/**
+ * jquery.pagination.js v3.20190309
+ * dependency: jQuery.js, devutility.js
+ * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
+ */
+
 (function ($, window, document, undefined) {
-    var pluginName = 'pagination',
-        version = '20170118';
+    var pluginName = 'pagination';
 
     var defaults = {
         totalRecords: 0,
-        pageSize: 10,
         pageIndex: 1,
-        visiblePages: 7, //Visible pages count.
-        changingType: 'ajax', //Two action type when changing page: 'jump', 'ajax'.
-        pageTagName: 'data-page', //Tag name of page number.
-        liClassName: 'page', //Style for every page's 'li'.
-        firstButtonName: 'First', //Button's text of First.
-        firstButtonClass: 'first', //Button's style of First.
-        preButtonName: 'Previous', //Button's text of Previous.
-        preButtonClass: 'prev', //Button's style of Previous.
+        pageSize: 10,
+        visiblePagesCount: 7, //Visible pages count.
+        changingType: 'ajax', //Changing page can cause two action types 'jump' and 'ajax'.
+        firstButtonName: 'First', //Text of 'first' button.
+        firstButtonClass: 'first', //Style of 'first' button.
+        prevButtonName: 'Previous', //Button's text of Previous button.
+        prevButtonClass: 'prev', //Button's style of Previous.
         nextButtonName: 'Next', //Button's text of Next.
         nextButtonClass: 'next', //Button's style of Next.
         lastButtonName: 'Last', //Button's text of Last.
         lastButtonClass: 'last', //Button's style of Last.
-        disabledButtonClass: 'disabled', //Button's style of disabled.
-        currentButtonClass: 'active', //Button's style of current clicked.
-        ulClass: 'pagination pagination-sm', //Class of ul
-        isReturnedTop: true,
-        positionID: '',
-        onPageClick: null, //Event that on click.
-        afterPageClick: null //Event that after click.
+        buttonClass: 'page-item', //Class for each button.
+        buttonAClass: 'page-link', //Class for lable <a> in button.
+        disabledButtonClass: 'disabled', //Style of disabled button.
+        currentButtonClass: 'active', //Style of current button.
+        paginationClass: 'pagination', //Style of ul dom.
+        onPageClick: function (pageIndex) {},
+        onReload: function (options) {}
+    };
+
+    var config = {
+        buttonDataName: 'pageIndex'
     };
 
     function Plugin(element, options) {
         this.$element = $(element);
         this.options = $.extend({}, defaults, options);
-
-        if (this.verifyParameter()) {
-            this.init();
-        }
-        else {
-            console.error('Parameter error!');
-        }
-    };
+        this._init();
+    }
 
     Plugin.prototype.constructor = Plugin;
 
-    Plugin.prototype.init = function () {
-        this.pagesCount = calculatePagesCount(this.options.totalRecords, this.options.pageSize);
+    /* Init */
 
-        if (this.pagesCount > 0) {
-            this.middlePage = getMiddlePage(this.options.visiblePages);
-            this.currentPage = getDefaultPage(this.pagesCount, ~~this.options.pageIndex);
-            this.firstVisiblePage = getFirstVisiblePage(this.currentPage, this.options.visiblePages, this.middlePage, this.pagesCount);
-            this.lastVisiblePage = getLastVisiblePage(this.currentPage, this.options.visiblePages, this.middlePage, this.pagesCount);
-            this.createPagination();
+    Plugin.prototype._init = function () {
+        if (!this._verify()) {
+            return;
         }
+
+        this.pagesCount = calculatePagesCount(this.options.totalRecords, this.options.pageSize);
+        this._initOptions();
+
+        this.displayPagesCount = getDisplayPagesCount(this.pagesCount, this.options.visiblePagesCount);
+        this._initPagination();
     };
 
-    Plugin.prototype.verifyParameter = function () {
+    Plugin.prototype._verify = function () {
         var options = this.options;
 
-        if (isNaN(options.totalRecords) || options.pageSize < 1) {
-            return false;
-        }
-
-        if (isNaN(options.pageSize) || options.pageSize < 1) {
-            return false;
-        }
-
-        if (isNaN(options.visiblePages) || options.visiblePages < 1) {
+        if (isNaN(options.totalRecords) || options.totalRecords < 0) {
+            console.error('Invalid "totalRecords"!');
             return false;
         }
 
         if (isNaN(options.pageIndex) || options.pageIndex < 1) {
+            console.error('Invalid "pageIndex"!');
+            return false;
+        }
+
+        if (isNaN(options.pageSize) || options.pageSize < 1) {
+            console.error('Invalid "pageSize"!');
+            return false;
+        }
+
+        if (isNaN(options.visiblePagesCount) || options.visiblePagesCount < 1) {
+            console.error('Invalid "visiblePagesCount"!');
             return false;
         }
 
         return true;
     };
 
-    Plugin.prototype.verifyInitPage = function () {
+    Plugin.prototype._initOptions = function () {
+        if (this.pagesCount == 0) {
+            this.options.pageIndex = defaults.pageIndex;
+            this.options.visiblePagesCount = defaults.visiblePagesCount;
+            return;
+        }
+
         if (this.options.pageIndex > this.pagesCount) {
-            return false;
+            this.options.pageIndex = this.pagesCount;
         }
 
-        return true;
+        if (this.options.visiblePagesCount > this.pagesCount) {
+            this.options.visiblePagesCount = this.pagesCount;
+        }
     };
 
-    Plugin.prototype.createPagination = function () {
-        this.$element.children().remove();
-        this.$element.append(this.generatePagination());
+    Plugin.prototype._initPagination = function () {
+        this.$pagination = $('<ul></ul>');
+
+        if (this.options.paginationClass) {
+            this.$pagination.addClass(this.options.paginationClass);
+        }
+
+        this._loadPagination();
+        this.$element.empty().append(this.$pagination);
     };
 
-    Plugin.prototype.generatePagination = function () {
-        var canClick = true;
-        var className = '';
-        var currentPage = this.currentPage;
-        var firstVisiblePage = this.firstVisiblePage;
-        var lastVisiblePage = this.lastVisiblePage;
-        var $listContainer = $('<ul></ul>');
+    /* Init end */
 
-        if (this.options.ulClass) {
-            $listContainer.addClass(this.options.ulClass);
-        }
+    /* Bind methods */
 
-        if (firstVisiblePage === currentPage) {
-            $listContainer.append(this.getFirstButton(false));
-            $listContainer.append(this.getPreButton(false));
-        }
-        else {
-            $listContainer.append(this.getFirstButton(true));
-            $listContainer.append(this.getPreButton(true));
-        }
+    Plugin.prototype._bind = function () {
+        this._bindButtons();
+        this._bindPageButtons();
+    };
 
-        for (var i = firstVisiblePage; i < lastVisiblePage + 1; i++) {
-            className = this.options.liClassName;
-            canClick = true;
+    Plugin.prototype._bindButtons = function () {
+        this._bindFirstButton(this.$firstBtn);
+        this._bindPrevButton(this.$prevBtn);
+        this._bindNextButton(this.$nextBtn);
+        this._bindLastButton(this.$lastBtn);
+    };
 
-            if (i === this.currentPage) {
-                canClick = false;
-                className = this.options.liClassName + ' ' + this.options.currentButtonClass;
+    Plugin.prototype._bindPageButtons = function () {
+        var self = this;
+
+        this.$pagination.children('li').each(function () {
+            var $button = $(this);
+            var data = $button.data(config.buttonDataName);
+
+            if (data) {
+                var pageIndex = ~~data;
+
+                if (self.options.pageIndex === pageIndex) {
+                    if (!(isButton($button, self.options.firstButtonName) || isButton($button, self.options.lastButtonName))) {
+                        $button.addClass(self.options.currentButtonClass);
+                    }
+                } else {
+                    $button.click(function () {
+                        self._changePageIndex(pageIndex);
+                    });
+                }
             }
-
-            $listContainer.append(this.generateLink(i, className, i, canClick));
-        }
-
-        if (lastVisiblePage === currentPage) {
-            $listContainer.append(this.getNextButton(false));
-            $listContainer.append(this.getLastButton(false));
-        }
-        else {
-            $listContainer.append(this.getNextButton(true));
-            $listContainer.append(this.getLastButton(true));
-        }
-
-        return $listContainer;
+        });
     };
 
-    Plugin.prototype.getFirstButton = function (available) {
-        if (!this.options.firstButtonClass && !this.options.firstButtonName) {
-            return null;
+    Plugin.prototype._bindFirstButton = function ($button) {
+        var self = this;
+
+        if ($button === null) {
+            return;
         }
 
-        var className = this.options.firstButtonClass;
-
-        if (!available) {
-            className += ' ' + this.options.disabledButtonClass;
-        }
-
-        return this.generateLink(this.options.firstButtonName, className, -4, available);
-    };
-
-    Plugin.prototype.getPreButton = function (available) {
-        if (!this.options.preButtonClass && !this.options.preButtonName) {
-            return null;
-        }
-
-        var className = this.options.preButtonClass;
-
-        if (!available) {
-            className += ' ' + this.options.disabledButtonClass;
-        }
-
-        return this.generateLink(this.options.preButtonName, className, -3, available);
-    };
-
-    Plugin.prototype.getNextButton = function (available) {
-        if (!this.options.nextButtonClass && !this.options.nextButtonName) {
-            return null;
-        }
-
-        var className = this.options.nextButtonClass;
-
-        if (!available) {
-            className += ' ' + this.options.disabledButtonClass;
-        }
-
-        return this.generateLink(this.options.nextButtonName, className, -2, available);
-    };
-
-    Plugin.prototype.getLastButton = function (available) {
-        if (!this.options.lastButtonClass && !this.options.lastButtonName) {
-            return null;
-        }
-
-        var className = this.options.lastButtonName;
-
-        if (!available) {
-            className += ' ' + this.options.disabledButtonClass;
-        }
-
-        return this.generateLink(this.options.lastButtonName, className, -1, available);
-    };
-
-    Plugin.prototype.generateLink = function (text, className, pageNum, canClick) {
-        var that = this;
-        var pageTagName = that.options.pageTagName;
-        var onPageClick = that.options.onPageClick;
-        var afterPageClick = that.options.afterPageClick;
-        var link = $('<li><a href="javascript:void(0);">' + text + '</a></li>');
-        link.addClass(className);
-        link.attr(pageTagName, pageNum);
-
-        if (canClick) {
-            link.bind('click', function () {
-                var pageIndex = parseInt($(this).attr(pageTagName));
-                pageIndex = that.currentPage = getCurrentPage(pageIndex, that.currentPage, that.pagesCount);
-
-                if (onPageClick) {
-                    onPageClick(pageIndex);
-                }
-
-                that.changingPage();
-
-                if (afterPageClick) {
-                    afterPageClick(pageIndex);
-                }
-
-                if (that.options.isReturnedTop) {
-                    document.documentElement.scrollTop = document.body.scrollTop = 0;
-                }
-
-                if (that.options.positionID) {
-                    document.getElementById(that.options.positionID).scrollIntoView();
-                }
+        if (this.options.pageIndex === 1) {
+            $button.addClass(this.options.disabledButtonClass);
+        } else {
+            $button.click(function () {
+                self._changePageIndex(1);
             });
         }
-
-        return link;
     };
 
-    Plugin.prototype.changingPage = function () {
-        this.firstVisiblePage = getFirstVisiblePage(this.currentPage, this.options.visiblePages, this.middlePage, this.pagesCount);
-        this.lastVisiblePage = getLastVisiblePage(this.currentPage, this.options.visiblePages, this.middlePage, this.pagesCount);
-        this.createPagination();
-    };
+    Plugin.prototype._bindPrevButton = function ($button) {
+        var self = this;
 
-    function calculatePagesCount(totalRecords, pageSize) {
-        var count = 0;
-
-        if (!isNaN(totalRecords) && !isNaN(pageSize) && pageSize > 0) {
-            count = parseInt(totalRecords / pageSize);
-
-            if (totalRecords % pageSize > 0) {
-                count++;
-            }
+        if ($button === null) {
+            return;
         }
 
-        count = count === 0 ? 1 : count;
+        if (this.options.pageIndex === 1) {
+            $button.addClass(this.options.disabledButtonClass);
+        } else {
+            $button.click(function () {
+                self._changePageIndex(self.options.pageIndex - 1);
+            });
+        }
+    };
+
+    Plugin.prototype._bindNextButton = function ($button) {
+        var self = this;
+
+        if ($button === null) {
+            return;
+        }
+
+        if (this.options.pageIndex === this.pagesCount || this.pagesCount === 0) {
+            $button.addClass(this.options.disabledButtonClass);
+        } else {
+            $button.click(function () {
+                self._changePageIndex(self.options.pageIndex + 1);
+            });
+        }
+    };
+
+    Plugin.prototype._bindLastButton = function ($button) {
+        var self = this;
+
+        if ($button === null) {
+            return;
+        }
+
+        if (this.options.pageIndex === this.pagesCount || this.pagesCount === 0) {
+            $button.addClass(this.options.disabledButtonClass);
+        } else {
+            $button.click(function () {
+                self._changePageIndex(self.pagesCount);
+            });
+        }
+    };
+
+    /* Bind methods end */
+
+    /* Methods */
+
+    Plugin.prototype._loadPagination = function () {
+        this.$pagination.empty();
+        this._fillPagination();
+        this._bind();
+    };
+
+    Plugin.prototype._fillPagination = function () {
+        this.$firstBtn = this._createPageButton(this.options.firstButtonName, this.options.firstButtonClass);
+        this.$prevBtn = this._createPageButton(this.options.prevButtonName, this.options.prevButtonClass);
+        this.$pagination.append(this.$firstBtn, this.$prevBtn);
+
+        this._fillPageButtons();
+
+        this.$nextBtn = this._createPageButton(this.options.nextButtonName, this.options.nextButtonClass);
+        this.$lastBtn = this._createPageButton(this.options.lastButtonName, this.options.lastButtonClass);
+        this.$pagination.append(this.$nextBtn, this.$lastBtn);
+    };
+
+    Plugin.prototype._fillPageButtons = function () {
+        var pagesRegion = getPagesRegion(this.options.pageIndex, this.displayPagesCount, this.pagesCount);
+        this._createPageButtons(pagesRegion.start, pagesRegion.end);
+    };
+
+    Plugin.prototype._createPageButtons = function (start, end) {
+        for (var i = start; i <= end; i++) {
+            var $pageButton = this._createPageButton(i).data(config.buttonDataName, i);
+            this.$pagination.append($pageButton);
+        }
+    };
+
+    Plugin.prototype._createPageButton = function (text, btnClassName) {
+        var btnClasses = [];
+        var aClasses = [];
+
+        if (this.options.buttonClass) {
+            btnClasses.push(this.options.buttonClass);
+        }
+
+        if (btnClassName) {
+            btnClasses.push(btnClassName);
+        }
+
+        if (this.options.buttonAClass) {
+            aClasses.push(this.options.buttonAClass);
+        }
+
+        return createButton(text, btnClasses, aClasses);
+    };
+
+    Plugin.prototype._changePageIndex = function (pageIndex) {
+        this.options.pageIndex = pageIndex;
+        this._onPageClick(pageIndex);
+        this._loadPagination();
+    };
+
+    /* Methods end */
+
+    /* Events */
+
+    Plugin.prototype._onPageClick = function (pageIndex) {
+        if (this.options.onPageClick) {
+            this.options.onPageClick(pageIndex);
+        }
+    };
+
+    Plugin.prototype._onReload = function () {
+        if (this.options.onReload) {
+            this.options.onReload(this.options);
+        }
+    };
+
+    /* Events end */
+
+    /* Functions */
+
+    var calculatePagesCount = function (totalRecords, pageSize) {
+        var count = parseInt(totalRecords / pageSize);
+
+        if (totalRecords % pageSize > 0) {
+            count++;
+        }
+
         return count;
     };
 
-    function getMiddlePage(visiblePages) {
-        var middlePage = parseInt(visiblePages / 2);
-        middlePage = (visiblePages % 2 > 0) ? middlePage + 1 : middlePage;
-        return middlePage;
+    var getDisplayPagesCount = function (pagesCount, visiblePagesCount) {
+        return Math.min(pagesCount, visiblePagesCount);
     };
 
-    function getDefaultPage(pagesCount, customerDefaultPage) {
-        if (customerDefaultPage > pagesCount)
-            return pagesCount;
+    var getPagesRegion = function (pageIndex, displayPagesCount, pagesCount) {
+        var result = {
+            start: 0,
+            end: 0
+        };
 
-        return customerDefaultPage;
+        var half = parseInt(displayPagesCount / 2);
+
+        if (pageIndex === 1 || pageIndex <= half) {
+            result.start = 1;
+            result.end = displayPagesCount;
+            return result;
+        }
+
+        if (pageIndex === pagesCount || pageIndex >= pagesCount - half) {
+            result.start = pagesCount - displayPagesCount + 1;
+            result.end = pagesCount;
+            return result;
+        }
+
+        result.start = pageIndex - half;
+        result.end = pageIndex + half;
+
+        if (displayPagesCount % 2 === 0) {
+            result.start += 1;
+        }
+
+        return result;
     };
 
-    function getFirstVisiblePage(currentPage, visiblePages, middlePage, pagesCount) {
-        if (pagesCount <= visiblePages) {
-            return 1;
+    var createButton = function (text, btnClasses, aClasses) {
+        if (text === null || text === '' || text === undefined) {
+            return null;
         }
 
-        var pageIndex = currentPage - middlePage + 1;
+        var $button = $('<li></li>');
 
-        if (currentPage > pagesCount - middlePage) {
-            return pagesCount - visiblePages + 1;
+        if (btnClasses) {
+            for (var index in btnClasses) {
+                $button.addClass(btnClasses[index]);
+            }
         }
 
-        return pageIndex < 1 ? 1 : pageIndex;
+        var $aLink = $('<a href="javascript:void(0);"></a>').html(text);
+
+        if (aClasses) {
+            for (var index in aClasses) {
+                $aLink.addClass(aClasses[index]);
+            }
+        }
+
+        return $button.append($aLink);
     };
 
-    function getLastVisiblePage(currentPage, visiblePages, middlePage, pagesCount) {
-        if (pagesCount <= visiblePages) {
-            return pagesCount;
-        }
-
-        var pageIndex = currentPage + middlePage - 1;
-
-        if (pageIndex < visiblePages) {
-            return visiblePages;
-        }
-
-        return pageIndex > pagesCount ? pagesCount : pageIndex;
+    var isButton = function ($button, text) {
+        return $button.children('a').html() === text;
     };
 
-    function getCurrentPage(pageIndex, prePage, pagesCount) {
-        switch (pageIndex) {
-            case -4:
-                return 1;
+    /* Functions end */
 
-            case -3:
-                {
-                    if (prePage > 1) {
-                        return prePage - 1;
-                    }
+    /* Public methods */
 
-                    return 1;
-                }
-
-            case -2:
-                {
-                    if (prePage < pagesCount) {
-                        return prePage + 1;
-                    }
-
-                    return pagesCount;
-                }
-
-            case -1:
-                return pagesCount;
-
-            default:
-                return pageIndex;
-        }
+    Plugin.prototype.getOption = function (name) {
+        return this.options[name];
     };
 
-    $[pluginName] = {
-        getDefaults: function () {
-            return defaults;
+    Plugin.prototype.reload = function (options) {
+        if (!devutility.options.isChanged(this.options, options)) {
+            return;
         }
+
+        this.options = $.extend({}, this.options, options);
+        this._init();
+        this._onReload();
     };
+
+    Plugin.prototype.changeTotalRecords = function (totalRecords) {
+        this.reload({
+            totalRecords: totalRecords
+        });
+    };
+
+    Plugin.prototype.changePageIndex = function (pageIndex) {
+        this.reload({
+            pageIndex: pageIndex
+        });
+    };
+
+    Plugin.prototype.changePageSize = function (pageSize) {
+        this.reload({
+            pageSize: pageSize
+        });
+    };
+
+    /* Public methods end */
 
     $.fn[pluginName] = function (options) {
         return this.each(function () {
-            var plugin = new Plugin(this, options);
+            if (!$.data(this, pluginName)) {
+                $.data(this, pluginName, new Plugin(this, options));
+            }
         });
     };
 })(jQuery, window, document);
