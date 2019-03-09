@@ -1,7 +1,7 @@
 /**
- * @license Background.js v20190225
- * (c) Aldwin. https://github.com/eagle6688
- * License: MIT
+ * Background.js v20190225
+ * dependency: devutility.js
+ * @license: License: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
 (function ($, window, document, undefined) {

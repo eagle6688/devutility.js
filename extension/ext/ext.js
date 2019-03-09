@@ -1,10 +1,10 @@
 /**
+ * ext.js v20190206
  * Javascript extensions libraries.
- * This extension depend on devutility.js
- * @license ext.js v20190206
- * (c) 2010-2016 Aldwin. https://github.com/eagle6688
- * License: MIT
+ * dependency: devutility.js
+ * @license: MIT (c) 2010-2016 Aldwin. https://github.com/eagle6688
  */
+
 (function (window, document, undefined) {
     /**
      * Date extensions

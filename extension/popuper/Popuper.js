@@ -1,7 +1,7 @@
 /**
- * @license Popuper.js v20190224
- * (c) Aldwin. https://github.com/eagle6688
- * License: MIT
+ * Popuper.js v20190224
+ * dependency: jQuery.js
+ * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
 (function ($, window, document, undefined) {
