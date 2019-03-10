@@ -136,14 +136,14 @@
 
         this.$yearSelector.change(function () {
             self.selectedYear = ~~$(this).val();
-            self._setSelect(self.$monthSelector, self._getMinMonth(), self._getMaxMonth());
-            self._setSelect(self.$daySelector, self._getMinDay(), self._getMaxDay());
+            self.selectedMonth = self._setSelect(self.$monthSelector, self._getMinMonth(), self._getMaxMonth());
+            self.selectedDay = self._setSelect(self.$daySelector, self._getMinDay(), self._getMaxDay());
             self._change();
         });
 
         this.$monthSelector.change(function () {
             self.selectedMonth = ~~$(this).val();
-            self._setSelect(self.$daySelector, self._getMinDay(), self._getMaxDay());
+            self.selectedDay = self._setSelect(self.$daySelector, self._getMinDay(), self._getMaxDay());
             self._change();
         });
 
@@ -231,7 +231,10 @@
 
         if (selected != undefined && selected != null) {
             $select.val(selected);
+            return selected;
         }
+
+        return start;
     };
 
     /* Methods end */
