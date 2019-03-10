@@ -1,5 +1,5 @@
 /**
- * DateSelector.js v20190306
+ * DateSelector.js v20190310
  * Plugin manage date selector include year, month and day.
  * dependency: jQuery.js, devutility.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
