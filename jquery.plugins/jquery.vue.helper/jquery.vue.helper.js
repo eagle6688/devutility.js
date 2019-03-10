@@ -1,5 +1,5 @@
 /**
- * jquery.vue.helper.js v20190309
+ * jquery.vue.helper.js v20190310
  * dependency: jQuery.js, vue.js, devutility.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
@@ -204,6 +204,10 @@
     };
 
     $.fn[pluginName] = function (options) {
-        return new Plugin(this, options);
+        return this.each(function () {
+            if (!$.data(this, pluginName)) {
+                $.data(this, pluginName, new Plugin(this, options));
+            }
+        });
     };
 })(jQuery, window, document);

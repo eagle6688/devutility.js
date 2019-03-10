@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>jquery.popuper.js - http://localhost:9000/jquery.plugins/jquery.popuper.js/index.html</title>
+    <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../content/styles/common.css" rel="stylesheet" />
+    <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../extension/background/Background.js"></script>
+    <script src="jquery.popuper.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <h3>jquery.popuper.js</h3>
+        <hr />
+        <div class="form-row">
+            <div class="col">
+                <button id="btn-show" type="button" class="btn btn-primary">Show</button>
+                <button id="btn-showAll" type="button" class="btn btn-primary">Show All</button>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <button id="btn-hide" type="button" class="btn btn-primary">Hide</button>
+                <button id="btn-hideAll" type="button" class="btn btn-primary">Hide All</button>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="height: 1000px">
+    </div>
+    <div id="div-loading" class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem; display:none;">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <img id="img-loading" src="loader.gif" style="display:none;">
+    <script>
+        var popuper = $('#div-loading').popuper();
+
+        $('#btn-show').click(function () {
+            popuper.show();
+        });
+
+        $('#btn-showAll').click(function () {
+            popuper.showAll();
+        });
+
+        $('#btn-hide').click(function () {
+            popuper.hide();
+        });
+
+        $('#btn-hideAll').click(function () {
+            popuper.hideAll();
+        });
+    </script>
+</body>
+
+</html>
