@@ -34,9 +34,10 @@
                 <button id="btn-date-format" type="button" class="btn btn-primary">Format</button>
             </div>
         </div>
+        <h5 class="marginTop20">date.parse(format, date)</h5>
         <div class="form-row">
             <div class="col du-input">
-                <input type="text" value="2019-9-9" class="form-control" placeholder="Date Value" readonly>
+                <input type="text" value="2019-09-09 Date" class="form-control" placeholder="Date Value" readonly>
             </div>
             <div class="col du-input">
                 <input id="txt-date-format-format1" type="text" value="yyyy-MM-dd" class="form-control" placeholder="Date Format">
@@ -45,7 +46,7 @@
                 <button id="btn-date-format1" type="button" class="btn btn-primary">Parse</button>
             </div>
         </div>
-        <h5 class="marginTop20">date.parse(str, format)</h5>
+        <h5 class="marginTop20">date.parse(format, str)</h5>
         <div class="form-row">
             <div class="col du-input">
                 <input id="txt-date-parse-format" type="text" value="yyyy-MM-dd" class="form-control" placeholder="Date Format">
@@ -55,6 +56,18 @@
             </div>
             <div class="col">
                 <button id="btn-date-parse" type="button" class="btn btn-primary">Parse</button>
+            </div>
+        </div>
+        <h5 class="marginTop20">string.trimPrefix(str, prefix)</h5>
+        <div class="form-row">
+            <div class="col du-input">
+                <input id="txt-string-trim-prefix-value" type="text" value="" class="form-control" placeholder="value">
+            </div>
+            <div class="col du-input">
+                <input id="txt-string-trim-prefix" type="text" value="" class="form-control" placeholder="prefix">
+            </div>
+            <div class="col">
+                <button id="btn-string-trim-prefix" type="button" class="btn btn-primary">Trim Prefix</button>
             </div>
         </div>
     </div>

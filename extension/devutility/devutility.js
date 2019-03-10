@@ -1,5 +1,5 @@
 /**
- * devutility.js v20190309
+ * devutility.js v20190310
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
@@ -117,7 +117,7 @@
         },
         month: {
             MM: function (str, format) {
-                return date.extractToInt(str, format, 'MM') - 1;
+                return date.extractToInt(str, format, 'MM');
             }
         },
         day: {
@@ -147,11 +147,11 @@
         }
     };
 
-    date.format = function (_date, format) {
+    date.format = function (format, _date) {
         var value = format;
 
         for (var pattern in date.serialize) {
-            var regExp = new RegExp(pattern, 'g');
+            var regExp = new RegExp(pattern, 'i');
             var patternValue = date.serialize[pattern].call(this, _date);
             value = value.replace(regExp, patternValue);
         }
@@ -159,7 +159,7 @@
         return value;
     };
 
-    date.parse = function (str, format) {
+    date.parse = function (format, str) {
         var params = {
             year: 1970,
             month: 1,
@@ -190,7 +190,7 @@
             }
         }
 
-        return new Date(params.year, params.month, params.day, params.hour, params.minute, params.second, params.millisecond);
+        return new Date(params.year, params.month - 1, params.day, params.hour, params.minute, params.second, params.millisecond);
     };
 
     date.add = function (_date, milliseconds) {
@@ -322,6 +322,26 @@
         }
 
         return value;
+    };
+
+    string.trimPrefix = function (str, prefix) {
+        var index = str.indexOf(prefix);
+
+        if (index != 0) {
+            return str;
+        }
+
+        do {
+            var step = str.indexOf(prefix, index + prefix.length);
+
+            if (step == -1) {
+                break;
+            }
+
+            index = step;
+        } while (index < str.length);
+
+        return index + 1 == str.length ? '' : str.substring(index + 1);
     };
 
     devutility.string = string;

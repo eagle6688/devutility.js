@@ -17,14 +17,14 @@ $('#btn-date-test-date').click(function () {
 $('#btn-date-format').click(function () {
     var date = new Date();
     var format = $('#txt-date-format-format').val();
-    var value = devutility.date.format(date, format);
+    var value = devutility.date.format(format, date);
     alert(value);
 });
 
 $('#btn-date-format1').click(function () {
     var date = new Date(2019, 8, 9);
     var format = $('#txt-date-format-format1').val();
-    var value = devutility.date.format(date, format);
+    var value = devutility.date.format(format, date);
     alert(value);
 });
 
@@ -33,6 +33,14 @@ $('#btn-date-format1').click(function () {
 $('#btn-date-parse').click(function () {
     var format = $('#txt-date-parse-format').val();
     var value = $('#txt-date-parse-value').val();
-    var date = devutility.date.parse(value, format);
+    var date = devutility.date.parse(format, value);
     alert(date.toString());
+});
+
+//string.trimPrefix
+
+$('#btn-string-trim-prefix').click(function () {
+    var value = $('#txt-string-trim-prefix-value').val();
+    var prefix = $('#txt-string-trim-prefix').val();
+    alert(devutility.string.trimPrefix(value, prefix));
 });
