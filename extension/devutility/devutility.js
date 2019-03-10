@@ -7,6 +7,7 @@
     var devutility = {
         url: {},
         date: {},
+        html: {},
         array: {},
         string: {},
         select: {},
@@ -254,6 +255,30 @@
     devutility.date = date;
 
     /* date end */
+
+    /* html */
+
+    var html = {};
+
+    html.pageWidth = function () {
+        if (!document.body || !document.documentElement) {
+            return 0;
+        }
+
+        return Math.max(document.body.scrollWidth, document.documentElement.scrollWidth);
+    };
+
+    html.pageHeight = function () {
+        if (!document.body || !document.documentElement) {
+            return 0;
+        }
+
+        return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    };
+
+    devutility.html = html;
+
+    /* html end */
 
     /* array */
 
