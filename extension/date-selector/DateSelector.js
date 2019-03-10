@@ -89,6 +89,7 @@
     Plugin.prototype._initStart = function () {
         if (typeof this.options.start == 'string') {
             this.options.start = devutility.date.parse(config.datePattern, this.options.start);
+            return;
         }
 
         if (this.options.start == null) {
@@ -99,6 +100,7 @@
     Plugin.prototype._initEnd = function () {
         if (this.options.end == null) {
             this.options.end = devutility.date.addYear(this.current, 20);
+            return;
         }
 
         if (typeof this.options.end == 'string') {
@@ -194,7 +196,7 @@
     };
 
     Plugin.prototype._getMinDay = function () {
-        if (this.selectedYear == this.options.start.getFullYear() && this.selectedMonth == this.options.start.getMonth()) {
+        if (this.selectedYear == this.options.start.getFullYear() && this.selectedMonth == this.options.start.getMonth() + 1) {
             return this.options.start.getDate();
         }
 
@@ -202,7 +204,7 @@
     };
 
     Plugin.prototype._getMaxDay = function () {
-        if (this.selectedYear == this.options.end.getFullYear() && this.selectedMonth == this.options.end.getMonth()) {
+        if (this.selectedYear == this.options.end.getFullYear() && this.selectedMonth == this.options.end.getMonth() + 1) {
             return this.options.end.getDate();
         }
 

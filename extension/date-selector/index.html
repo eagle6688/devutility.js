@@ -15,21 +15,127 @@
     <div class="main">
         <h3>DateSelector.js</h3>
         <hr />
+        <h5 class="marginTop20">Default initialization</h5>
         <div class="form-row">
             <div class="col col-sm-1">
-                <select id="select-year" class="form-control">
+                <select id="select-year-default" class="form-control">
                     <option selected>Year</option>
                     <option>...</option>
                 </select>
             </div>
             <div class="col col-sm-1">
-                <select id="select-month" class="form-control">
+                <select id="select-month-default" class="form-control">
                     <option selected>Month</option>
                     <option>...</option>
                 </select>
             </div>
             <div class="col col-sm-1">
-                <select id="select-day" class="form-control">
+                <select id="select-day-default" class="form-control">
+                    <option selected>Day</option>
+                    <option>...</option>
+                </select>
+            </div>
+        </div>
+        <h5 class="marginTop20">Initializing with initial date</h5>
+        <div class="form-row">
+            <div class="col col-sm-1">
+                <select id="select-year-initial" class="form-control">
+                    <option selected>Year</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-month-initial" class="form-control">
+                    <option selected>Month</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-day-initial" class="form-control">
+                    <option selected>Day</option>
+                    <option>...</option>
+                </select>
+            </div>
+        </div>
+        <h5 class="marginTop20">Initializing with initial string date</h5>
+        <div class="form-row">
+            <div class="col col-sm-1">
+                <select id="select-year-initial-string" class="form-control">
+                    <option selected>Year</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-month-initial-string" class="form-control">
+                    <option selected>Month</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-day-initial-string" class="form-control">
+                    <option selected>Day</option>
+                    <option>...</option>
+                </select>
+            </div>
+        </div>
+        <h5 class="marginTop20">Initializing with start</h5>
+        <div class="form-row">
+            <div class="col col-sm-1">
+                <select id="select-year-start" class="form-control">
+                    <option selected>Year</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-month-start" class="form-control">
+                    <option selected>Month</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-day-start" class="form-control">
+                    <option selected>Day</option>
+                    <option>...</option>
+                </select>
+            </div>
+        </div>
+        <h5 class="marginTop20">Initializing with end</h5>
+        <div class="form-row">
+            <div class="col col-sm-1">
+                <select id="select-year-end" class="form-control">
+                    <option selected>Year</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-month-end" class="form-control">
+                    <option selected>Month</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-day-end" class="form-control">
+                    <option selected>Day</option>
+                    <option>...</option>
+                </select>
+            </div>
+        </div>
+        <h5 class="marginTop20">Initializing with start and end</h5>
+        <div class="form-row">
+            <div class="col col-sm-1">
+                <select id="select-year-start-end" class="form-control">
+                    <option selected>Year</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-month-start-end" class="form-control">
+                    <option selected>Month</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-day-start-end" class="form-control">
                     <option selected>Day</option>
                     <option>...</option>
                 </select>
@@ -37,10 +143,61 @@
         </div>
     </div>
     <script>
-        var dateSelector = new DateSelector({
-            yearSelector: '#select-year',
-            monthSelector: '#select-month',
-            daySelector: '#select-day',
+        var dateSelector_default = new DateSelector({
+            yearSelector: '#select-year-default',
+            monthSelector: '#select-month-default',
+            daySelector: '#select-day-default',
+            change: function (date) {
+                console.log(date.toString());
+            }
+        });
+
+        var dateSelector_initial = new DateSelector({
+            yearSelector: '#select-year-initial',
+            monthSelector: '#select-month-initial',
+            daySelector: '#select-day-initial',
+            initial: new Date(2018, 1, 27), //2018-2-27
+            change: function (date) {
+                console.log(date.toString());
+            }
+        });
+
+        var dateSelector_initial_string = new DateSelector({
+            yearSelector: '#select-year-initial-string',
+            monthSelector: '#select-month-initial-string',
+            daySelector: '#select-day-initial-string',
+            initial: '2017-07-07',
+            change: function (date) {
+                console.log(date.toString());
+            }
+        });
+
+        var dateSelector_start = new DateSelector({
+            yearSelector: '#select-year-start',
+            monthSelector: '#select-month-start',
+            daySelector: '#select-day-start',
+            start: '2018-03-08',
+            change: function (date) {
+                console.log(date.toString());
+            }
+        });
+
+        var dateSelector_end = new DateSelector({
+            yearSelector: '#select-year-end',
+            monthSelector: '#select-month-end',
+            daySelector: '#select-day-end',
+            end: new Date(2019, 2, 15), //2019-3-15
+            change: function (date) {
+                console.log(date.toString());
+            }
+        });
+
+        var dateSelector_start_end = new DateSelector({
+            yearSelector: '#select-year-start-end',
+            monthSelector: '#select-month-start-end',
+            daySelector: '#select-day-start-end',
+            start: '2018-08-08',
+            end: new Date(),
             change: function (date) {
                 console.log(date.toString());
             }
