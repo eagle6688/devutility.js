@@ -47,6 +47,11 @@
                 <button id="btn-change-total-records" type="button" class="btn btn-primary">Change total records</button>
             </div>
         </div>
+        <h5 class="marginTop20">Simulate add one item</h5>
+        <div id="pagination3" class="marginTop20"></div>
+        <div class="form-row">
+            <button id="btn-simulate-add-one-item" type="button" class="btn btn-primary">Simulate add one item</button>
+        </div>
         <h5 class="marginTop20">Change options</h5>
         <div class="form-row card col-sm-4">
             <code>
@@ -70,17 +75,28 @@
             totalRecords: 101,
             paginationClass: 'pagination pagination-sm',
             onPageClick: function (pageIndex) {
-                console.log(pageIndex);
+                console.log('pagination1:', pageIndex);
             }
         });
 
         $('#pagination2').pagination({
             totalRecords: 101,
             onPageClick: function (pageIndex) {
-                console.log(pageIndex);
+                console.log('pagination2:', pageIndex);
             },
             onReload: function (options) {
-                console.log(options);
+                console.log('pagination2:', options);
+            }
+        });
+
+        $('#pagination3').pagination({
+            visiblePagesCount: 8,
+            paginationClass: 'pagination',
+            onPageClick: function (pageIndex) {
+                console.log('pagination3:', pageIndex);
+            },
+            onReload: function (options) {
+                console.log('pagination3:', options);
             }
         });
 
@@ -106,6 +122,12 @@
                 totalRecords: 5000,
                 visiblePagesCount: 20
             });
+        });
+
+        $('#btn-simulate-add-one-item').click(function () {
+            var pagination3 = $('#pagination3').data('pagination');
+            var totalRecords = ~~pagination3.getOption('totalRecords');
+            pagination3.changeTotalRecords(totalRecords + 1)
         });
     </script>
 </body>

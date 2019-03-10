@@ -1,5 +1,5 @@
 ﻿/**
- * jquery.pagination.js v3.20190309
+ * jquery.pagination.js v3.20190310
  * dependency: jQuery.js, devutility.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
@@ -85,16 +85,11 @@
     Plugin.prototype._initOptions = function () {
         if (this.pagesCount == 0) {
             this.options.pageIndex = defaults.pageIndex;
-            this.options.visiblePagesCount = defaults.visiblePagesCount;
             return;
         }
 
         if (this.options.pageIndex > this.pagesCount) {
             this.options.pageIndex = this.pagesCount;
-        }
-
-        if (this.options.visiblePagesCount > this.pagesCount) {
-            this.options.visiblePagesCount = this.pagesCount;
         }
     };
 
