@@ -27,10 +27,13 @@
     </div>
     <div class="container" style="height: 1000px">
     </div>
+    <div id="div-loading" class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem; display:none;">
+        <span class="sr-only">Loading...</span>
+    </div>
     <img id="img-loading" src="loader.gif" style="display:none;">
     <script>
         var popuper = new Popuper({
-            selector: '#img-loading'
+            selector: '#div-loading'
         });
 
         $('#btn-show').click(function () {
