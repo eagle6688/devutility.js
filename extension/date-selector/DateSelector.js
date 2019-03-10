@@ -109,18 +109,19 @@
     Plugin.prototype._initInitial = function () {
         if (this.options.initial == null) {
             this.options.initial = this.current;
+            return;
         }
 
         if (typeof this.options.initial == 'string') {
             this.options.initial = devutility.date.parse(config.datePattern, this.options.initial);
         }
-
-        this.selectedYear = this.options.initial.getFullYear();
-        this.selectedMonth = this.options.initial.getMonth();
-        this.selectedDay = this.options.initial.getDate();
     };
 
     Plugin.prototype._initSelector = function () {
+        this.selectedYear = this.options.initial.getFullYear();
+        this.selectedMonth = this.options.initial.getMonth() + 1;
+        this.selectedDay = this.options.initial.getDate();
+
         this._setSelect(this.$yearSelector, this._getMinYear(), this._getMaxYear(), this.selectedYear);
         this._setSelect(this.$monthSelector, this._getMinMonth(), this._getMaxMonth(), this.selectedMonth);
         this._setSelect(this.$daySelector, this._getMinDay(), this._getMaxDay(), this.selectedDay);
@@ -135,10 +136,20 @@
 
         this.$yearSelector.change(function () {
             self.selectedYear = ~~$(this).val();
-            self.selectedMonth = self._getMinMonth();
-            self.selectedDay = self._getMinDay();
-            self._setSelect(self.$monthSelector, this._getMinMonth(), this._getMaxMonth());
-            self._setSelect(self.$daySelector, this._getMinDay(), this._getMaxDay());
+            self._setSelect(self.$monthSelector, self._getMinMonth(), self._getMaxMonth());
+            self._setSelect(self.$daySelector, self._getMinDay(), self._getMaxDay());
+            self._change();
+        });
+
+        this.$monthSelector.change(function () {
+            self.selectedMonth = ~~$(this).val();
+            self._setSelect(self.$daySelector, self._getMinDay(), self._getMaxDay());
+            self._change();
+        });
+
+        this.$daySelector.change(function () {
+            self.selectedDay = ~~$(this).val();
+            self._change();
         });
     };
 
@@ -155,6 +166,8 @@
     };
 
     /* Event methods end */
+
+    /* Methods */
 
     Plugin.prototype._getMinYear = function () {
         return this.options.start.getFullYear();
@@ -212,7 +225,8 @@
         $select.empty();
 
         for (var index = start; index <= end; index++) {
-            $select.append('<option value="' + index + '">' + index + '</option>');
+            var value = index.toString();
+            $select.append('<option value="' + value + '">' + value + '</option>');
         }
 
         if (selected != undefined && selected != null) {
@@ -220,13 +234,12 @@
         }
     };
 
+    /* Methods end */
+
     /* Public methods */
 
     Plugin.prototype.getDate = function () {
-        var year = ~~this.$yearSelector.val();
-        var month = ~~this.$monthSelector.val();
-        var day = ~~this.$daySelector.val();
-        return new Date(year, month, day);
+        return new Date(this.selectedYear, this.selectedMonth - 1, this.selectedDay);
     };
 
     /* Public methods end */

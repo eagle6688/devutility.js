@@ -7,6 +7,8 @@
     <link href="../../content/styles/common.css" rel="stylesheet" />
     <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
     <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../devutility/devutility.js"></script>
+    <script src="DateSelector.js"></script>
 </head>
 
 <body>
@@ -14,19 +16,19 @@
         <h3>DateSelector.js</h3>
         <hr />
         <div class="form-row">
-            <div class="col">
+            <div class="col col-sm-1">
                 <select id="select-year" class="form-control">
                     <option selected>Year</option>
                     <option>...</option>
                 </select>
             </div>
-            <div class="col">
+            <div class="col col-sm-1">
                 <select id="select-month" class="form-control">
                     <option selected>Month</option>
                     <option>...</option>
                 </select>
             </div>
-            <div class="col">
+            <div class="col col-sm-1">
                 <select id="select-day" class="form-control">
                     <option selected>Day</option>
                     <option>...</option>
@@ -35,6 +37,14 @@
         </div>
     </div>
     <script>
+        var dateSelector = new DateSelector({
+            yearSelector: '#select-year',
+            monthSelector: '#select-month',
+            daySelector: '#select-day',
+            change: function (date) {
+                console.log(date.toString());
+            }
+        });
     </script>
 </body>
 
