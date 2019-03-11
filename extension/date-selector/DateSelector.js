@@ -63,11 +63,6 @@
             return false;
         }
 
-        if (!this.options.daySelector) {
-            console.error('"daySelector" cannot be null!');
-            return false;
-        }
-
         if (!devutility.date.test(config.datePatternRegExp, this.options.start)) {
             console.error('Invalid "start" format!');
             return false;
@@ -149,10 +144,12 @@
             self._change();
         });
 
-        this.$daySelector.change(function () {
-            self.selectedDay = ~~$(this).val();
-            self._change();
-        });
+        if (this._hasDaySelector()) {
+            this.$daySelector.change(function () {
+                self.selectedDay = ~~$(this).val();
+                self._change();
+            });
+        }
     };
 
     /* Bind methods end */
@@ -170,6 +167,10 @@
     /* Event methods end */
 
     /* Methods */
+
+    Plugin.prototype._hasDaySelector = function () {
+        return this.options.daySelector && this.$daySelector.length > 0;
+    };
 
     Plugin.prototype._getMinYear = function () {
         return this.options.start.getFullYear();
@@ -224,6 +225,10 @@
     };
 
     Plugin.prototype._setSelect = function ($select, start, end, selected) {
+        if (!$select || $select.length == 0) {
+            return 0;
+        }
+
         $select.empty();
 
         for (var index = start; index <= end; index++) {
