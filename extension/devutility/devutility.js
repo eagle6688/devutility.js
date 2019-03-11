@@ -1,5 +1,5 @@
 /**
- * devutility.js v20190310
+ * devutility.js v20190311
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
@@ -250,6 +250,24 @@
         }
 
         return false;
+    };
+
+    date.isWeekend = function (_date) {
+        var day = _date.getDay();
+
+        if (day == 0 || day == 6) {
+            return true;
+        }
+
+        return false;
+    };
+
+    date.isSameDay = function (date1, date2) {
+        return date1.getFullYear() == date2.getFullYear() && date1.getMonth() == date2.getMonth() && date1.getDate() == date2.getDate();
+    };
+
+    date.isToday = function (_date) {
+        return date.isSameDay(_date, new Date());
     };
 
     devutility.date = date;
