@@ -141,6 +141,21 @@
                 </select>
             </div>
         </div>
+        <h5 class="marginTop20">Default month initialization</h5>
+        <div class="form-row">
+            <div class="col col-sm-1">
+                <select id="select-year-month" class="form-control">
+                    <option selected>Year</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col col-sm-1">
+                <select id="select-month-month" class="form-control">
+                    <option selected>Month</option>
+                    <option>...</option>
+                </select>
+            </div>
+        </div>
     </div>
     <script>
         var dateSelector_default = new DateSelector({
@@ -198,6 +213,15 @@
             daySelector: '#select-day-start-end',
             start: '2018-08-08',
             end: new Date(),
+            change: function (date) {
+                console.log(date.toString());
+            }
+        });
+
+        var dateSelector_month = new DateSelector({
+            yearSelector: '#select-year-month',
+            monthSelector: '#select-month-month',
+            initial: '2017-07',
             change: function (date) {
                 console.log(date.toString());
             }

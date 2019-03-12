@@ -21,6 +21,8 @@
     var config = {
         datePattern: 'yyyy-MM-dd',
         datePatternRegExp: new RegExp(/^\d{4}-\d{2}-\d{2}$/),
+        monthPattern: 'yyyy-MM',
+        monthPatternRegExp: new RegExp(/^\d{4}-\d{2}$/),
         monthWithDays31: [1, 3, 5, 7, 8, 10, 12],
         monthWithDays30: [4, 6, 9, 11]
     };
@@ -35,6 +37,10 @@
     /* Init methods */
 
     Plugin.prototype._init = function () {
+        this.startPattern = null;
+        this.endPattern = null;
+        this.initialPattern = null;
+
         if (!this._verify()) {
             return;
         }
@@ -63,32 +69,62 @@
             return false;
         }
 
-        if (!devutility.date.test(config.datePatternRegExp, this.options.start)) {
-            console.error('Invalid "start" format!');
-            return false;
+        if (this.options.start) {
+            if (devutility.date.test(config.datePatternRegExp, this.options.start)) {
+                this.startPattern = config.datePattern;
+            }
+
+            if (devutility.date.test(config.monthPatternRegExp, this.options.start)) {
+                this.startPattern = config.monthPattern;
+            }
+
+            if (this.startPattern == null) {
+                console.error('Invalid "start" format!');
+                return false;
+            }
         }
 
-        if (!devutility.date.test(config.datePatternRegExp, this.options.end)) {
-            console.error('Invalid "end" format!');
-            return false;
+        if (this.options.end) {
+            if (devutility.date.test(config.datePatternRegExp, this.options.end)) {
+                this.endPattern = config.datePattern;
+            }
+
+            if (devutility.date.test(config.monthPatternRegExp, this.options.end)) {
+                this.endPattern = config.monthPattern;
+            }
+
+            if (this.endPattern == null) {
+                console.error('Invalid "start" format!');
+                return false;
+            }
         }
 
-        if (!devutility.date.test(config.datePatternRegExp, this.options.initial)) {
-            console.error('Invalid "initial" format!');
-            return false;
+        if (this.options.initial) {
+            if (devutility.date.test(config.datePatternRegExp, this.options.initial)) {
+                this.initialPattern = config.datePattern;
+            }
+
+            if (devutility.date.test(config.monthPatternRegExp, this.options.initial)) {
+                this.initialPattern = config.monthPattern;
+            }
+
+            if (this.initialPattern == null) {
+                console.error('Invalid "initial" format!');
+                return false;
+            }
         }
 
         return true;
     };
 
     Plugin.prototype._initStart = function () {
-        if (typeof this.options.start == 'string') {
-            this.options.start = devutility.date.parse(config.datePattern, this.options.start);
-            return;
-        }
-
         if (this.options.start == null) {
             this.options.start = devutility.date.addYear(this.current, -10);
+        }
+
+        if (typeof this.options.start == 'string') {
+            this.options.start = devutility.date.parse(this.startPattern, this.options.start);
+            return;
         }
     };
 
@@ -99,7 +135,7 @@
         }
 
         if (typeof this.options.end == 'string') {
-            this.options.end = devutility.date.parse(config.datePattern, this.options.end);
+            this.options.end = devutility.date.parse(this.endPattern, this.options.end);
         }
     };
 
@@ -110,7 +146,7 @@
         }
 
         if (typeof this.options.initial == 'string') {
-            this.options.initial = devutility.date.parse(config.datePattern, this.options.initial);
+            this.options.initial = devutility.date.parse(this.initialPattern, this.options.initial);
         }
     };
 
@@ -226,7 +262,7 @@
 
     Plugin.prototype._setSelect = function ($select, start, end, selected) {
         if (!$select || $select.length == 0) {
-            return 0;
+            return 1;
         }
 
         $select.empty();
