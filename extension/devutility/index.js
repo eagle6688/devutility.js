@@ -1,3 +1,11 @@
+//file.getSize
+
+$('#btn-file-getSize').click(function () {
+    var size = devutility.file.getSize('txt-file-getSize');
+    var message = size + 'b, ' + devutility.file.convertSize(size, 'kb') + 'kb, ' + devutility.file.convertSize(size, 'mb') + 'mb';
+    alert(message);
+});
+
 //date.test
 
 $('#btn-date-test-input').click(function () {

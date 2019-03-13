@@ -1,13 +1,15 @@
 /**
- * devutility.js v20190311
+ * devutility.js v20190313
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
 (function (window, document, undefined) {
     var devutility = {
         url: {},
+        file: {},
         date: {},
         html: {},
+        input: {},
         array: {},
         string: {},
         select: {},
@@ -32,6 +34,52 @@
     devutility.url = url;
 
     /* url end */
+
+    /* file */
+
+    var file = {};
+
+    file.getSize = function (id) {
+        var size = 0;
+        var input = document.getElementById(id);
+
+        if (!input.files || !input.files[0]) {
+            return size;
+        }
+
+        size = input.files[0].size;
+
+        if (!size && input.value && typeof ActiveXObject != 'undefined') {
+            var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+
+            if (fileSystem.FileExists(input.value)) {
+                var _file = fileSystem.GetFile(input.value);
+                size = _file.Size;
+            }
+        }
+
+        return size;
+    };
+
+    file.convertSize = function (bytes, unit) {
+        switch (unit) {
+            case 'kb':
+                return bytes / 1024;
+
+            case 'mb':
+                return bytes / (1024 * 1024);
+
+            case 'gb':
+                return bytes / (1024 * 1024 * 1024);
+
+            default:
+                return bytes;
+        }
+    };
+
+    devutility.file = file;
+
+    /* file end */
 
     /* date */
 
