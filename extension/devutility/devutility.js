@@ -9,7 +9,7 @@
         file: {},
         date: {},
         html: {},
-        input: {},
+        image: {},
         array: {},
         string: {},
         select: {},
@@ -345,6 +345,25 @@
     devutility.html = html;
 
     /* html end */
+
+    /* image */
+
+    var image = {};
+
+    image.getSize = function (src, callback) {
+        var img = new Image();
+        img.src = src;
+
+        img.onload = function () {
+            if (img.complete == true) {
+                callback(img);
+            }
+        };
+    };
+
+    devutility.image = image;
+
+    /* image end */
 
     /* array */
 

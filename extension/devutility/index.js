@@ -52,3 +52,29 @@ $('#btn-string-trim-prefix').click(function () {
     var prefix = $('#txt-string-trim-prefix').val();
     alert(devutility.string.trimPrefix(value, prefix));
 });
+
+//image.getSize
+
+$('#btn-image-getSize').click(function () {
+    var input = document.getElementById('txt-image-getSize');
+    console.log(input.files[0]);
+    console.log(input.value);
+
+    var windowURL = window.URL || window.webkitURL;
+    var src = windowURL.createObjectURL(input.files[0]);
+    console.log(src);
+
+    devutility.image.getSize(src, function (img) {
+        console.log(img);
+        alert('height: ' + img.height + ', width: ' + img.width);
+    });
+});
+
+$('#btn-src-image-getSize').click(function () {
+    var src = $('#txt-src-image-getSize').val();
+
+    devutility.image.getSize(src, function (img) {
+        console.log(img);
+        alert('height: ' + img.height + ', width: ' + img.width);
+    });
+});
