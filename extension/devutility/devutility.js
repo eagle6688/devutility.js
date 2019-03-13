@@ -77,6 +77,22 @@
         }
     };
 
+    file.getExtension = function (name) {
+        var index = -1;
+        var iterator = name.indexOf('.');
+
+        while (iterator > -1) {
+            index = iterator;
+            iterator = name.indexOf('.', index + 1);
+        }
+
+        if (index == -1) {
+            return null;
+        }
+
+        return name.substring(index);
+    };
+
     devutility.file = file;
 
     /* file end */

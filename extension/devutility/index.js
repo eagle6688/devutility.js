@@ -6,6 +6,13 @@ $('#btn-file-getSize').click(function () {
     alert(message);
 });
 
+//file.getExtension
+
+$('#btn-file-getExtension').click(function () {
+    var value = $('#txt-file-getExtension').val();
+    alert(devutility.file.getExtension(value));
+});
+
 //date.test
 
 $('#btn-date-test-input').click(function () {
