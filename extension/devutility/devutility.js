@@ -350,7 +350,7 @@
 
     var image = {};
 
-    image.getSize = function (src, callback) {
+    image.getObject = function (src, callback) {
         var img = new Image();
         img.src = src;
 

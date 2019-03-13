@@ -64,7 +64,7 @@ $('#btn-image-getSize').click(function () {
     var src = windowURL.createObjectURL(input.files[0]);
     console.log(src);
 
-    devutility.image.getSize(src, function (img) {
+    devutility.image.getObject(src, function (img) {
         console.log(img);
         alert('height: ' + img.height + ', width: ' + img.width);
     });
@@ -73,7 +73,7 @@ $('#btn-image-getSize').click(function () {
 $('#btn-src-image-getSize').click(function () {
     var src = $('#txt-src-image-getSize').val();
 
-    devutility.image.getSize(src, function (img) {
+    devutility.image.getObject(src, function (img) {
         console.log(img);
         alert('height: ' + img.height + ', width: ' + img.width);
     });
