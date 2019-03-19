@@ -14,6 +14,7 @@
         array: {},
         string: {},
         select: {},
+        cookie: {},
         options: {},
         checkbox: {}
     };
@@ -594,6 +595,14 @@
     devutility.select = select;
 
     /* select end */
+
+    /* cookie */
+
+    var cookie = {};
+
+    devutility.cookie = cookie;
+
+    /* cookie end */
 
     /* options */
 
