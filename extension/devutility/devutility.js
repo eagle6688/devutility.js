@@ -22,10 +22,6 @@
 
     var url = {};
 
-    url.appendParam = function (_url, connector, name, value) {
-        return _url + connector + name + '=' + value;
-    };
-
     url.addParam = function (_url, name, value) {
         var wellIndex = _url.indexOf('#');
         var urlHeader = _url;
@@ -42,6 +38,33 @@
         }
 
         return urlHeader + connector + name + '=' + value + urlTail;
+    };
+
+    url.updateParam = function (_url, name, value) {
+        var str = name + '=';
+        var index = _url.indexOf(str);
+
+        if (index == -1) {
+            return _url;
+        }
+
+        var urlHeader = _url.substring(0, index + str.length);
+        var tailIndex = _url.indexOf('&', index + str.length);
+        var urlTail = '';
+
+        if (tailIndex > 0) {
+            urlTail = _url.substring(tailIndex);
+            return urlHeader + value + urlTail;
+        }
+
+        tailIndex = _url.indexOf('#', index + str.length);
+
+        if (tailIndex > 0) {
+            urlTail = _url.substring(tailIndex);
+            return urlHeader + value + urlTail;
+        }
+
+        return urlHeader + value;
     };
 
     devutility.url = url;

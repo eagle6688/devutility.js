@@ -7,6 +7,15 @@ $('#btn-url-addParam').click(function () {
     alert(devutility.url.addParam(url, name, value));
 });
 
+//url.updateParam
+
+$('#btn-url-updateParam').click(function () {
+    var url = $('#txt-url-updateParam-url').val();
+    var name = $('#txt-url-updateParam-name').val();
+    var value = $('#txt-url-updateParam-value').val();
+    alert(devutility.url.updateParam(url, name, value));
+});
+
 //file.getSize
 
 $('#btn-file-getSize').click(function () {
