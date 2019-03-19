@@ -16,6 +16,14 @@ $('#btn-url-updateParam').click(function () {
     alert(devutility.url.updateParam(url, name, value));
 });
 
+//url.getParam
+
+$('#btn-url-getParam').click(function () {
+    var url = $('#txt-url-getParam-url').val();
+    var name = $('#txt-url-getParam-name').val();
+    alert(devutility.url.getParam(url, name));
+});
+
 //file.getSize
 
 $('#btn-file-getSize').click(function () {

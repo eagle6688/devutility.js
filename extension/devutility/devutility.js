@@ -22,6 +22,8 @@
 
     var url = {};
 
+
+
     url.addParam = function (_url, name, value) {
         var wellIndex = _url.indexOf('#');
         var urlHeader = _url;
@@ -65,6 +67,30 @@
         }
 
         return urlHeader + value;
+    };
+
+    url.getParam = function (_url, name) {
+        var str = name + '=';
+        var index = _url.indexOf(str);
+
+        if (index == -1) {
+            return null;
+        }
+
+        var startIndex = index + str.length;
+        var endIndex = _url.indexOf('&', startIndex);
+
+        if (endIndex > 0) {
+            return _url.substring(startIndex, endIndex);
+        }
+
+        endIndex = _url.indexOf('#', startIndex);
+
+        if (endIndex > 0) {
+            return _url.substring(startIndex, endIndex);
+        }
+
+        return _url.substring(startIndex);
     };
 
     devutility.url = url;
