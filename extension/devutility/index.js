@@ -85,3 +85,13 @@ $('#btn-src-image-getSize').click(function () {
         alert('height: ' + img.height + ', width: ' + img.width);
     });
 });
+
+//checkbox.checkAll
+
+$('#btn-checkbox-check-all').click(function () {
+    devutility.checkbox.checkAll('cb-devutility', true);
+});
+
+$('#btn-checkbox-check-none').click(function () {
+    devutility.checkbox.checkAll('cb-devutility', false);
+});

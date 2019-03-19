@@ -13,7 +13,8 @@
         array: {},
         string: {},
         select: {},
-        options: {}
+        options: {},
+        checkbox: {}
     };
 
     /* url */
@@ -489,6 +490,24 @@
     devutility.options = options;
 
     /* options end */
+
+    /* checkbox */
+
+    var checkbox = {};
+
+    checkbox.checkAll = function (name, status) {
+        var array = document.getElementsByName(name);
+
+        for (var i = 0; i < array.length; i++) {
+            if (array[i].type == 'checkbox') {
+                array[i].checked = status;
+            }
+        }
+    };
+
+    devutility.checkbox = checkbox;
+
+    /* checkbox end */
 
     window.devutility = devutility;
 })(window, document);
