@@ -408,6 +408,15 @@
 
     var string = {};
 
+    string.isNullOrWhitespace = function (str) {
+        if (str == null || str == undefined || str == '') {
+            return true;
+        }
+
+        var value = str.replace(/\s|\f|\r|\t|\v/g, '');
+        return value == '';
+    };
+
     string.contain = function (str, value) {
         return str.indexOf(value) > -1;
     };
