@@ -426,6 +426,10 @@
         return value;
     };
 
+    string.trim = function (str) {
+        return str.replace(/^\s+|\s+$/g, '');
+    };
+
     string.trimPrefix = function (str, prefix) {
         var index = str.indexOf(prefix);
 

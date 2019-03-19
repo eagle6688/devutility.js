@@ -52,6 +52,15 @@ $('#btn-date-parse').click(function () {
     alert(date.toString());
 });
 
+//string.trim
+
+$('#btn-string-trim').click(function () {
+    var value = $('#txt-string-trim-value').val();
+    var trimedValue = devutility.string.trim(value);
+    console.log(trimedValue);
+    alert(trimedValue);
+});
+
 //string.trimPrefix
 
 $('#btn-string-trim-prefix').click(function () {
