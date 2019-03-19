@@ -1,3 +1,12 @@
+//url.addParam
+
+$('#btn-url-addParam').click(function () {
+    var url = $('#txt-url-addParam-url').val();
+    var name = $('#txt-url-addParam-name').val();
+    var value = $('#txt-url-addParam-value').val();
+    alert(devutility.url.addParam(url, name, value));
+});
+
 //file.getSize
 
 $('#btn-file-getSize').click(function () {

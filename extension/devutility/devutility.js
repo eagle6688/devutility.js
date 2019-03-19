@@ -22,15 +22,26 @@
 
     var url = {};
 
-    url.addParam = function (url, name, value) {
-        if (url.indexOf('?') != -1) {
-            url += '&';
-        } else {
-            url += '?';
+    url.appendParam = function (_url, connector, name, value) {
+        return _url + connector + name + '=' + value;
+    };
+
+    url.addParam = function (_url, name, value) {
+        var wellIndex = _url.indexOf('#');
+        var urlHeader = _url;
+        var urlTail = '';
+        var connector = '&';
+
+        if (wellIndex > 0) {
+            urlHeader = _url.substring(0, wellIndex);
+            urlTail = _url.substring(wellIndex);
         }
 
-        url += name + '=' + value;
-        return url;
+        if (urlHeader.indexOf('?') == -1) {
+            connector = '?';
+        }
+
+        return urlHeader + connector + name + '=' + value + urlTail;
     };
 
     devutility.url = url;
