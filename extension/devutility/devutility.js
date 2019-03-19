@@ -9,6 +9,7 @@
         file: {},
         date: {},
         html: {},
+        math: {},
         image: {},
         array: {},
         string: {},
@@ -362,6 +363,30 @@
     devutility.html = html;
 
     /* html end */
+
+    /* math */
+
+    var math = {};
+
+    math.max = function (array) {
+        if (Object.prototype.toString.call(array) === '[object Array]') {
+            return Math.max.apply(Math, array);
+        }
+
+        return undefined;
+    };
+
+    math.min = function (array) {
+        if (Object.prototype.toString.call(array) === '[object Array]') {
+            return Math.min.apply(Math, array);
+        }
+
+        return undefined;
+    };
+
+    devutility.math = math;
+
+    /* math end */
 
     /* image */
 

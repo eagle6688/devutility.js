@@ -52,6 +52,20 @@ $('#btn-date-parse').click(function () {
     alert(date.toString());
 });
 
+//math.max
+
+$('#btn-math-max').click(function () {
+    var array = [1, 2, 9, 1, 5, 6, 8];
+    alert(devutility.math.max(array));
+});
+
+//math.min
+
+$('#btn-math-min').click(function () {
+    var array = [1, 2, 9, 1, 5, 6, 8];
+    alert(devutility.math.min(array));
+});
+
 //string.trim
 
 $('#btn-string-trim').click(function () {
