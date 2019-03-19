@@ -1,5 +1,5 @@
 /**
- * devutility.js v20190313
+ * devutility.js v20190319
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
