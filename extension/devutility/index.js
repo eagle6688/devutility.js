@@ -24,6 +24,14 @@ $('#btn-url-getParam').click(function () {
     alert(devutility.url.getParam(url, name));
 });
 
+//url.removeParam
+
+$('#btn-url-removeParam').click(function () {
+    var url = $('#txt-url-removeParam-url').val();
+    var name = $('#txt-url-removeParam-name').val();
+    alert(devutility.url.removeParam(url, name));
+});
+
 //file.getSize
 
 $('#btn-file-getSize').click(function () {

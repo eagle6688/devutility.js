@@ -22,8 +22,6 @@
 
     var url = {};
 
-
-
     url.addParam = function (_url, name, value) {
         var wellIndex = _url.indexOf('#');
         var urlHeader = _url;
@@ -50,8 +48,9 @@
             return _url;
         }
 
-        var urlHeader = _url.substring(0, index + str.length);
-        var tailIndex = _url.indexOf('&', index + str.length);
+        index = index + str.length;
+        var urlHeader = _url.substring(0, index);
+        var tailIndex = _url.indexOf('&', index);
         var urlTail = '';
 
         if (tailIndex > 0) {
@@ -59,7 +58,7 @@
             return urlHeader + value + urlTail;
         }
 
-        tailIndex = _url.indexOf('#', index + str.length);
+        tailIndex = _url.indexOf('#', index);
 
         if (tailIndex > 0) {
             urlTail = _url.substring(tailIndex);
@@ -91,6 +90,35 @@
         }
 
         return _url.substring(startIndex);
+    };
+
+    url.removeParam = function (_url, name) {
+        var str = name + '=';
+        var index = _url.indexOf(str);
+
+        if (index == -1) {
+            return _url;
+        }
+
+        var urlHeader = _url.substring(0, index);
+        index += str.length;
+
+        var tailIndex = _url.indexOf('&', index);
+        var urlTail = '';
+
+        if (tailIndex > 0) {
+            urlTail = _url.substring(tailIndex + 1);
+            return urlHeader + urlTail;
+        }
+
+        tailIndex = _url.indexOf('#', index);
+
+        if (tailIndex > 0) {
+            urlTail = _url.substring(tailIndex);
+            return urlHeader + urlTail;
+        }
+
+        return urlHeader;
     };
 
     devutility.url = url;
