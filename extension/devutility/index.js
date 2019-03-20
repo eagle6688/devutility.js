@@ -117,6 +117,18 @@ $('#btn-string-trim-prefix').click(function () {
     alert(devutility.string.trimPrefix(value, prefix));
 });
 
+//cookie.save
+
+$('#btn-cookie-save').click(function () {
+    var name = $('#txt-cookie-save-name').val();
+    var value = $('#txt-cookie-save-value').val();
+    var expires = ~~$('#txt-cookie-save-expires').val();
+    var domain = $('#txt-cookie-save-domain').val();
+    var path = $('#txt-cookie-save-path').val();
+    devutility.cookie.save(name, value, expires, domain, path);
+    console.log('OK!');
+});
+
 //image.getSize
 
 $('#btn-image-getSize').click(function () {

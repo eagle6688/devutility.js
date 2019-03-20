@@ -600,6 +600,28 @@
 
     var cookie = {};
 
+    cookie.save = function (name, value, expires, domain, path) {
+        var cookieString = name + '=' + escape(value);
+
+        if (expires) {
+            var date = new Date();
+            date.setTime(date.getTime() + expires);
+            cookieString += '; expires=' + date.toGMTString();
+        }
+
+        if (domain) {
+            cookieString += '; domain=' + domain;
+        }
+
+        if (path) {
+            cookieString += '; path=' + path;
+        } else {
+            cookieString += '; path=/';
+        }
+
+        document.cookie = cookieString;
+    };
+
     devutility.cookie = cookie;
 
     /* cookie end */
