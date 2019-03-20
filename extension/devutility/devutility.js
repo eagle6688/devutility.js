@@ -637,6 +637,14 @@
         return null;
     };
 
+    cookie.del = function (name) {
+        var value = cookie.get(name);
+
+        if (value != null) {
+            cookie.save(name, value, -1);
+        }
+    };
+
     devutility.cookie = cookie;
 
     /* cookie end */

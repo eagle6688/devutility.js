@@ -130,9 +130,17 @@ $('#btn-cookie-save').click(function () {
 });
 
 //cookie.get
+
 $('#btn-cookie-get').click(function () {
     var name = $('#txt-cookie-get-name').val();
     alert(devutility.cookie.get(name));
+});
+
+//cookie.del
+
+$('#btn-cookie-del').click(function () {
+    var name = $('#txt-cookie-get-name').val();
+    devutility.cookie.del(name);
 });
 
 //image.getSize
