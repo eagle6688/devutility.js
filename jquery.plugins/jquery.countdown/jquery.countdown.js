@@ -5,50 +5,54 @@
  */
 
 (function ($, window, document, undefined) {
-    var pluginName = 'vueHelper';
+    var pluginName = 'countdown';
 
-    var defaults = {
-        
-    };
+    var defaults = {};
 
-    function Plugin(element, options) {
-        this.$element = $(element);
-        this.options = $.extend(true, {}, defaults, options);
-        this.vueOptions = this.options.vueOptions;
+    function Plugin(options) {
+        this.options = $.extend({}, defaults, options);
         this._init();
     }
 
     Plugin.prototype.constructor = Plugin;
 
-    /* Init */
+    /* Init methods */
 
     Plugin.prototype._init = function () {
         if (!this._verify()) {
             return;
         }
 
-        this._initVue();
-        this._initData();
+        this._bind();
     };
 
     Plugin.prototype._verify = function () {
-        if (!this.$element.attr('id')) {
-            console.error('Invalid value of attribute "id"!');
-            return false;
-        }
-
         return true;
     };
 
-    
+    /* Init methods end */
 
-    /* Init end */
+    /* Bind methods */
+
+    Plugin.prototype._bind = function () {
+
+    };
+
+    /* Bind methods end */
+
+    /* Event methods */
+
+    /* Event methods end */
 
     /* Methods */
 
-    /* Events end */
+    /* Methods end */
 
-    $.fn[pluginName] = function (options) {
+    /* Public methods */
+
+    /* Public methods end */
+
+    window[pluginName] = $.fn[pluginName] = function (options) {
         return this.each(function () {
             if (!$.data(this, pluginName)) {
                 $.data(this, pluginName, new Plugin(this, options));
