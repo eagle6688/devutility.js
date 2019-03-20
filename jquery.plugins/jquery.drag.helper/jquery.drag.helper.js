@@ -4,8 +4,8 @@
         version = '20161205';
 
     var defaults = {
-        dragging: function (data) { },
-        dragged: function (data) { }
+        dragging: function (data) {},
+        dragged: function (data) {}
     };
 
     function Plugin(element, options) {
@@ -22,14 +22,11 @@
     Plugin.prototype.register = function () {
         var self = this;
 
-        document.addEventListener('dragenter', function (e) {
-        }, false);
+        document.addEventListener('dragenter', function (e) {}, false);
 
-        document.addEventListener('dragleave', function (e) {
-        }, false);
+        document.addEventListener('dragleave', function (e) {}, false);
 
-        this.element.addEventListener('dragleave', function (e) {
-        }, false);
+        this.element.addEventListener('dragleave', function (e) {}, false);
 
         this.element.addEventListener('dragenter', function (e) {
             e.stopPropagation();
