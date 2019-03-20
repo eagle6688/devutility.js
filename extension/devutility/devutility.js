@@ -622,6 +622,21 @@
         document.cookie = cookieString;
     };
 
+    cookie.get = function (name) {
+        var cookieString = document.cookie;
+        var array = cookieString.split('; ');
+
+        for (var i = 0; i < array.length; i++) {
+            var items = array[i].split('=');
+
+            if (items[0] == name) {
+                return unescape(items[1]);
+            }
+        }
+
+        return null;
+    };
+
     devutility.cookie = cookie;
 
     /* cookie end */

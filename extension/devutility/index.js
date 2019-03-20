@@ -129,6 +129,12 @@ $('#btn-cookie-save').click(function () {
     console.log('OK!');
 });
 
+//cookie.get
+$('#btn-cookie-get').click(function () {
+    var name = $('#txt-cookie-get-name').val();
+    alert(devutility.cookie.get(name));
+});
+
 //image.getSize
 
 $('#btn-image-getSize').click(function () {
