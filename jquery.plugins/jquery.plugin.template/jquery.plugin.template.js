@@ -52,7 +52,7 @@
 
     /* Public methods end */
 
-    window[pluginName] = $.fn[pluginName] = function (options) {
+    $.fn[pluginName] = function (options) {
         return this.each(function () {
             if (!$.data(this, pluginName)) {
                 $.data(this, pluginName, new Plugin(this, options));
