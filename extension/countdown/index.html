@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Countdown.js - http://localhost:9000/extension/countdown/index.html</title>
+    <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../content/styles/common.css" rel="stylesheet" />
+    <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="Countdown.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <h3>Countdown.js</h3>
+        <hr />
+        <div class="form-row">
+            <div class="col">
+                <button id="btn-request" type="button" class="btn btn-primary">Request Countdown</button>
+                <button id="btn-display" type="button" class="btn btn-secondary btn-lg" disabled></button>
+            </div>
+        </div>
+    </div>
+    <script>
+        var countdown = new Countdown({
+            buttonSelector: '#btn-request',
+            displaySelector: '#btn-display',
+            displayFormat: '{seconds}秒',
+            seconds: 10,
+            complete: function () {
+                console.log('Finished!');
+            }
+        });
+    </script>
+</body>
+
+</html>
