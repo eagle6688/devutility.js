@@ -16,6 +16,7 @@
         select: {},
         cookie: {},
         options: {},
+        browser: {},
         checkbox: {}
     };
 
@@ -670,6 +671,22 @@
     devutility.options = options;
 
     /* options end */
+
+    /* browser */
+
+    var browser = {};
+
+    browser.getScrollWidth = function () {
+        return Math.max(document.body ? document.body.scrollWidth : 0, document.documentElement ? document.documentElement.scrollWidth : 0);
+    };
+
+    browser.getScrollHeight = function () {
+        return Math.max(document.body ? document.body.scrollHeight : 0, document.documentElement ? document.documentElement.scrollHeight : 0);
+    };
+
+    devutility.browser = browser;
+
+    /* browser end */
 
     /* checkbox */
 
