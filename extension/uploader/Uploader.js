@@ -7,7 +7,14 @@
 (function ($, window, document, undefined) {
     var pluginName = 'Uploader';
 
-    var defaults = {};
+    var defaults = {
+        url: '', //Post url for uploading file.
+        files: [], //Files for uploading, note that all files should be in a same queue.
+        concurrency: 1, //Concurrency thread for uploading.
+        isSliced: true, //Whether slice a file to multi pieces or not?
+        pieceSize: 1 * 1024 * 1024, //Bytes for each piece, worked if "isSliced"=true.
+        checksum: function (callback) {} //
+    };
 
     function Plugin(options) {
         this.options = $.extend({}, defaults, options);
