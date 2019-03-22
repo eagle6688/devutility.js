@@ -1,5 +1,5 @@
 /**
- * Countdown.js v20190321
+ * Countdown.js v20190322
  * dependency: jQuery.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
@@ -13,7 +13,10 @@
         displayFormat: '{seconds}', //Display format of countdown.
         seconds: 60, //Seconds after click button.
         intervalMilliseconds: 1000, //Interval milliseconds for countdown.
-        complete: function () {}
+        clicked: function () { //Event triggered after button clicked and before diplay countdown seconds, Countdown would stop if clicked method return false.
+            return true;
+        },
+        complete: function () {} //Event triggered after countdown seconds scale down to 0.
     };
 
     function Plugin(options) {
@@ -68,6 +71,10 @@
         var self = this;
 
         this.$button.click(function () {
+            if (!self._clicked()) {
+                return;
+            }
+
             self.start();
         });
     };
@@ -76,12 +83,19 @@
 
     /* Event methods */
 
+    Plugin.prototype._clicked = function () {
+        if (this.options.clicked) {
+            return this.options.clicked();
+        }
+
+        return true;
+    };
+
     Plugin.prototype._complete = function () {
-        var self = this;
         this.stop();
 
-        if (self.options.complete) {
-            self.options.complete();
+        if (this.options.complete) {
+            this.options.complete();
         }
     };
 
