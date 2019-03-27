@@ -73,6 +73,28 @@
 
     /* Methods */
 
+    function Uploader() {
+        this.uploading = function (data) {};
+        this.uploaded = function (data) {};
+        this.failed = function (data) {};
+    }
+
+    Uploader.prototype._init = function () {
+        this.xhr = new XMLHttpRequest();
+    };
+
+    Uploader.prototype._bind = function () {
+
+    };
+
+    Uploader.prototype._onprogress = function (data) {
+
+    };
+
+    Uploader.prototype.upload = function (formData) {
+
+    };
+
     function UploaderData() {
         this.name = ''; //File or file piece name.
         this.size = 0; //Actual size or file or file piece.
