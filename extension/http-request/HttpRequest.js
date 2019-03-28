@@ -1,6 +1,5 @@
 /**
  * HttpRequest.js v20190328
- * dependency: devutility.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 

@@ -1,6 +1,6 @@
 /**
  * Uploader.js v20190322
- * dependency: jQuery.js, devutility.js
+ * dependency: jQuery.js, HttpRequest.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
