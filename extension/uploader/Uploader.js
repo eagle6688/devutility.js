@@ -14,7 +14,10 @@
         pieceSize: 1 * 1024 * 1024, //Bytes for each piece, worked if "needSlice"=true.
         retry: 1, //Retry times after upload failed.
         formData: null, //FormData for each upload request.
-        checksum: function (callback) {} //Function to calculate file's checksum.
+        checksum: function (callback) {}, //Function to calculate file's checksum.
+        progress: function (data) {}, //Target while uploading files.
+        complete: function (data) {}, //Target while upload completed.
+        failed: function (data) {} //Target while upload failed.
     };
 
     function Plugin(options) {
@@ -73,6 +76,12 @@
     /* Init methods end */
 
     /* Event methods */
+
+    Plugin.prototype._progress = function (data) {
+        if (this.options.progress) {
+            this.options.progress(data);
+        }
+    };
 
     /* Event methods end */
 
