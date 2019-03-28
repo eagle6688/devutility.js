@@ -4,7 +4,7 @@
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
-(function (window, document, undefined) {
+(function ($, window, document, undefined) {
     var pluginName = 'HttpRequest';
 
     var defaults = {
@@ -152,4 +152,4 @@
     /* Public methods end */
 
     window[pluginName] = Plugin;
-})(window, document);
+})(jQuery, window, document);
