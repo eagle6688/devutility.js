@@ -73,26 +73,87 @@
 
     /* Methods */
 
-    function Uploader() {
-        this.uploading = function (data) {};
-        this.uploaded = function (data) {};
-        this.failed = function (data) {};
+    function Uploader(options) {
+        var defaults = {
+            progress: function (data) {},
+            complete: function (data) {},
+            failed: function (data) {},
+            abort: function (data) {}
+        };
+
+        this.options = $.extend({}, defaults, options);
+        this._init();
     }
 
     Uploader.prototype._init = function () {
         this.xhr = new XMLHttpRequest();
+        this._bind();
     };
 
     Uploader.prototype._bind = function () {
+        var self = this;
 
+        xhr.addEventListener('progress', function (data) {
+            self._progress(data);
+        });
+
+        xhr.addEventListener('load', function (data) {
+            self._complete(data);
+        });
+
+        xhr.addEventListener('error', function (data) {
+            self._failed(data);
+        });
+
+        xhr.addEventListener('abort', function (data) {
+            self._abort(data);
+        });
     };
 
-    Uploader.prototype._onprogress = function (data) {
-
+    Uploader.prototype._progress = function (data) {
+        if (this.options.progress) {
+            this.options.progress(data);
+        }
     };
 
-    Uploader.prototype.upload = function (formData) {
+    Uploader.prototype._complete = function (data) {
+        if (this.options.complete) {
+            this.options.complete(data);
+        }
+    };
 
+    Uploader.prototype._failed = function (data) {
+        if (this.options.failed) {
+            this.options.failed(data);
+        }
+    };
+
+    Uploader.prototype._abort = function (data) {
+        if (this.options.abort) {
+            this.options.abort(data);
+        }
+    };
+
+    Uploader.prototype._result = function (data) {
+        function Result() {
+            this.data = null;
+            this.response = null;
+
+            if (arguments[0]) {
+                this.data = arguments[0];
+            }
+
+            if (arguments[1]) {
+                this.response = arguments[1];
+            }
+        }
+
+        return new Result(data, this.xhr.responseText);
+    };
+
+    Uploader.prototype.upload = function (url, formData) {
+        this.xhr.open('POST', url);
+        this.xhr.send(formData);
     };
 
     function UploaderData() {

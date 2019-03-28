@@ -10,5 +10,6 @@ module.exports = function (router) {
 
     require('./controllers/dataController')(router);
     require('./controllers/userController')(router);
+    require('./controllers/systemController')(router);
     return router;
 };
