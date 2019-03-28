@@ -62,6 +62,11 @@
             return false;
         }
 
+        if (this.options.formData && Object.prototype.toString.call(this.options.formData) != '[object FormData]') {
+            console.error('Invalid paramter "formData"!');
+            return false;
+        }
+
         return true;
     };
 
@@ -73,25 +78,41 @@
 
     /* Methods */
 
-    function UploaderData() {
+    function UploadData() {
         this.name = ''; //File or file piece name.
-        this.size = 0; //Actual size or file or file piece.
-        this.index = 0; //Index of file piece, 0 for file.
+        this.size = 0; //Actual size of file not file piece.
+        this.file = null; //File or file piece.
         this.count = 1; //Amount of file pieces, 1 for whole file.
         this.checksum = null; //Checksum of file or file piece.
         this.timestamp = 0; //Timestamp for uploading.
         this.properties = Object.keys(this);
+        this.set(arguments[0], arguments[1], arguments[2]);
     }
 
-    UploaderData.prototype.toFormData = function () {
-        var formData = this.options.formData;
+    UploadData.prototype.set = function (file, pieceCount, pieceIndex) {
+        if (pieceCount == 1) {
+            this.name = file.name;
+            this.size = file.size;
+            this.file = file;
+            return;
+        }
 
+        var start = pieceIndex * this.options.pieceSize;
+        var end = Math.min(file.size, start + this.options.pieceSize);
+
+        this.name = file.name + '_' + pieceIndex;
+        this.size = file.size;
+        this.file = file.slice(start, end);
+        this.count = pieceCount;
+    };
+
+    UploadData.prototype.toFormData = function (formData) {
         if (!formData) {
             formData = new FormData();
         }
 
         for (var name in this.properties) {
-            formData.set(name, this[name]);
+            formData.append(name, this[name]);
         }
 
         return formData;
@@ -99,22 +120,15 @@
 
     Plugin.prototype._enqueue = function (file) {
         if (!this.options.needSlice) {
-            this.total = this.queue.push(file);
+            this.total = this.queue.push(new UploadData(file, 1));
             return;
         }
 
         var pieceCount = Math.ceil(file.size / this.options.pieceSize);
 
         for (var i = 0; i < pieceCount; i++) {
-            var start = i * this.options.pieceSize,
-                end = Math.min(file.size, start + this.options.pieceSize);
-
-            var piece = this._createSlice(i, start, end);
+            this.total = this.queue.push(new UploadData(file, pieceCount, i));
         }
-    };
-
-    Plugin.prototype._createUploaderData = function (file) {
-
     };
 
     Plugin.prototype._percentage = function () {
