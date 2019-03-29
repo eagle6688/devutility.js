@@ -168,7 +168,11 @@
     };
 
     Plugin.prototype._failed = function (data, container) {
-        //Need consider http status.
+        if (data.status >= 400 && data.status < 500) {
+            this._customFailed();
+            return;
+        }
+
         this.uploadingSizes[container.uploadIndex] = 0;
 
         if (this.options.retry >= container.retry) {
@@ -178,8 +182,12 @@
             return;
         }
 
+        this._customFailed();
+    };
+
+    Plugin.prototype._customFailed = function () {
         if (this.options.failed) {
-            this.options.failed(data);
+            this.options.failed();
         }
     };
 
