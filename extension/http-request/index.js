@@ -22,9 +22,9 @@ $('#btn-get').click(function () {
 $('#btn-concurrency-get').click(function () {
     var count = 0;
     options.url = $('#txt-concurrency-url').val();
+    options.progress = null;
 
     options.complete = function (data) {
-        console.log(data);
         console.log(++count);
     };
 
@@ -37,29 +37,23 @@ $('#btn-concurrency-get').click(function () {
     httpRequestC.request();
 
     httpRequestA = new HttpRequest($.extend(true, {}, options, {
-        progress: null,
         complete: function (data) {
             console.log('I am A');
-            count++;
-            console.log(count);
+            console.log(++count);
         }
     }));
 
     httpRequestB = new HttpRequest($.extend(true, {}, options, {
-        progress: null,
         complete: function (data) {
             console.log('I am B');
-            count++;
-            console.log(count);
+            console.log(++count);
         }
     }));
 
     httpRequestC = new HttpRequest($.extend(true, {}, options, {
-        progress: null,
         complete: function (data) {
             console.log('I am C');
-            count++;
-            console.log(count);
+            console.log(++count);
         }
     }));
 
