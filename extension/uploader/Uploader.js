@@ -27,21 +27,21 @@
 
     Plugin.prototype.constructor = Plugin;
 
-    /* Container */
+    /* Package */
 
-    function Container(uploader, file, pieceCount, pieceIndex) {
+    function Package(uploader, file, pieceCount, pieceIndex) {
         this.name = ''; //File or file piece name.
-        this.size = 0; //Actual size of file not file piece.
         this.file = null; //File or file piece.
+        this.size = 0; //Actual size of file not file piece.
         this.count = 1; //Amount of file pieces, 1 for whole file.
         this.checksum = null; //Checksum of file or file piece.
         this.timestamp = 0; //Timestamp for uploading.
         this.properties = Object.keys(this);
-        this.retry = 0; //Retry times for upload.
-        this.uploadIndex = -1;
 
-        var self = this;
+        this.uploadTimes = 0;
+        this.uploadIndex = 0;
         this.set(file, pieceCount, pieceIndex);
+        var self = this;
 
         this.httpRequest = new HttpRequest({
             url: uploader.options.url,
@@ -58,13 +58,13 @@
         });
     }
 
-    Container.prototype.constructor = Container;
+    Package.prototype.constructor = Package;
 
-    Container.prototype.set = function (file, pieceCount, pieceIndex) {
+    Package.prototype.set = function (file, pieceCount, pieceIndex) {
         if (pieceCount == 1) {
             this.name = file.name;
-            this.size = file.size;
             this.file = file;
+            this.size = file.size;
             return;
         }
 
@@ -77,7 +77,7 @@
         this.count = pieceCount;
     };
 
-    Container.prototype.toFormData = function (formData) {
+    Package.prototype.toFormData = function (formData) {
         if (!formData) {
             formData = new FormData();
         }
@@ -89,12 +89,13 @@
         return formData;
     };
 
-    Container.prototype.upload = function () {
-        var formData = this.toFormData();
-        this.httpRequest.request(formData);
+    Package.prototype.upload = function () {
+        this.uploadTimes++;
+        this.timestamp = new Date().getTime();
+        this.httpRequest.request(this.toFormData());
     };
 
-    /* Container end */
+    /* Package end */
 
     /* Init methods */
 
@@ -142,12 +143,12 @@
 
     /* Event methods */
 
-    Plugin.prototype._progress = function (data, container) {
+    Plugin.prototype._progress = function (data, package) {
         if (data.event.loaded == data.event.total && data.event.type == 'load') {
             this.totalUploadedSize += data.event.loaded;
-            this.uploadingSizes[container.uploadIndex] = 0;
+            this.uploadingSizes[package.uploadIndex] = 0;
         } else {
-            this.uploadingSizes[container.uploadIndex] = data.event.loaded;
+            this.uploadingSizes[package.uploadIndex] = data.event.loaded;
         }
 
         if (this.options.progress) {
@@ -167,17 +168,16 @@
         }
     };
 
-    Plugin.prototype._failed = function (data, container) {
+    Plugin.prototype._failed = function (data, package) {
         if (data.status >= 400 && data.status < 500) {
             this._customFailed();
             return;
         }
 
-        this.uploadingSizes[container.uploadIndex] = 0;
+        this.uploadingSizes[package.uploadIndex] = 0;
 
-        if (this.options.retry >= container.retry) {
-            container.retry++;
-            this.queue.push(container);
+        if (this.options.retry >= package.uploadTimes) {
+            this.queue.push(package);
             this._upload();
             return;
         }
@@ -208,18 +208,18 @@
         this.totalSize += file.size;
 
         if (!this.options.needSlice) {
-            this.total = this.queue.push(new Container(this, file, 1));
+            this.total = this.queue.push(new Package(this, file, 1));
             return;
         }
 
         var pieceCount = Math.ceil(file.size / this.options.pieceSize);
 
         for (var i = 0; i < pieceCount; i++) {
-            this.total = this.queue.push(new Container(this, file, pieceCount, i));
+            this.total = this.queue.push(new Package(this, file, pieceCount, i));
         }
     };
 
-    Plugin.prototype._percentage = function () {
+    Plugin.prototype._percentage = function (uploadingSize) {
         if (this.totalSize == 0) {
             return 0;
         }
@@ -234,24 +234,24 @@
     };
 
     Plugin.prototype._upload = function (uploadIndex) {
-        var container = this.queue.shift();
+        var package = this.queue.shift();
 
-        if (!container) {
+        if (!package) {
             return;
         }
 
-        container.uploadIndex = uploadIndex;
+        package.uploadIndex = uploadIndex;
 
         if (this.options.checksum) {
-            this.options.checksum(container.file, function (value) {
-                container.checksum = value;
-                container.upload();
+            this.options.checksum(package.file, function (value) {
+                package.checksum = value;
+                package.upload();
             });
 
             return;
         }
 
-        container.upload();
+        package.upload();
     };
 
     /* Methods end */
