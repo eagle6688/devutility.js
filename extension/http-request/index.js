@@ -1,5 +1,4 @@
 var options = {
-    withCredentials: true,
     progress: function (data) {
         console.log(data);
     },

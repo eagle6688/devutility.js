@@ -1,5 +1,6 @@
 /**
  * HttpRequest.js v20190328
+ * dependency: jQuery.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
@@ -10,7 +11,7 @@
         url: '',
         method: 'GET',
         timeout: 0,
-        withCredentials: false,
+        withCredentials: true,
         headers: null,
         progress: function (data) {},
         complete: function (data) {},
@@ -35,6 +36,7 @@
         this.xhr = new XMLHttpRequest();
         this._bind();
     };
+
 
     Plugin.prototype._verify = function () {
         if (!this.options.url) {
