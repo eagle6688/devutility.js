@@ -9,6 +9,7 @@
 
     var defaults = {
         url: '', //Post url for uploading file.
+        dataType: 'json', //Data type of response.
         concurrency: 1, //Concurrency thread for uploading.
         needSlice: false, //Whether slice a file to multi pieces or not?
         pieceSize: 1 * 1024 * 1024, //Bytes for each piece, worked if "needSlice"=true.
@@ -26,76 +27,6 @@
     }
 
     Plugin.prototype.constructor = Plugin;
-
-    /* Package */
-
-    function Package(uploader, file, pieceCount, pieceIndex) {
-        this.name = ''; //File or file piece name.
-        this.file = null; //File or file piece.
-        this.size = 0; //Actual size of file not file piece.
-        this.count = 1; //Amount of file pieces, 1 for whole file.
-        this.checksum = null; //Checksum of file or file piece.
-        this.timestamp = 0; //Timestamp for uploading.
-        this.properties = Object.keys(this);
-
-        this.uploadTimes = 0;
-        this.uploadIndex = 0;
-        this.set(file, pieceCount, pieceIndex);
-        var self = this;
-
-        this.httpRequest = new HttpRequest({
-            url: uploader.options.url,
-            method: 'POST',
-            progress: function (data) {
-                uploader._progress(data, self);
-            },
-            complete: function (data) {
-                uploader._progress(data, self);
-            },
-            failed: function (data) {
-                uploader._failed(data, self);
-            }
-        });
-    }
-
-    Package.prototype.constructor = Package;
-
-    Package.prototype.set = function (file, pieceCount, pieceIndex) {
-        if (pieceCount == 1) {
-            this.name = file.name;
-            this.file = file;
-            this.size = file.size;
-            return;
-        }
-
-        var start = pieceIndex * this.options.pieceSize;
-        var end = Math.min(file.size, start + this.options.pieceSize);
-
-        this.name = file.name + '_' + pieceIndex;
-        this.size = file.size;
-        this.file = file.slice(start, end);
-        this.count = pieceCount;
-    };
-
-    Package.prototype.toFormData = function (formData) {
-        if (!formData) {
-            formData = new FormData();
-        }
-
-        for (var name in this.properties) {
-            formData.append(name, this[name]);
-        }
-
-        return formData;
-    };
-
-    Package.prototype.upload = function () {
-        this.uploadTimes++;
-        this.timestamp = new Date().getTime();
-        this.httpRequest.request(this.toFormData());
-    };
-
-    /* Package end */
 
     /* Init methods */
 
@@ -146,35 +77,40 @@
     Plugin.prototype._progress = function (data, package) {
         if (data.event.loaded == data.event.total && data.event.type == 'load') {
             this.totalUploadedSize += data.event.loaded;
-            this.uploadingSizes[package.uploadIndex] = 0;
+            this.channels[package.channelIndex] = 0;
         } else {
-            this.uploadingSizes[package.uploadIndex] = data.event.loaded;
+            this.channels[package.channelIndex] = data.event.loaded;
         }
 
+        var result = this._result(data, package);
+
         if (this.options.progress) {
-            this.options.progress(data);
+            this.options.progress(result);
         }
 
         if (this.totalSize == this.totalUploadedSize) {
-            this._complete();
+            this._upload();
+            return;
         }
 
-        this._upload();
+        this._complete(result);
     };
 
-    Plugin.prototype._complete = function () {
+    Plugin.prototype._complete = function (result) {
         if (this.options.complete) {
-            this.options.complete();
+            this.options.complete(result);
         }
     };
 
     Plugin.prototype._failed = function (data, package) {
+        var result = this._result(data, package);
+
         if (data.status >= 400 && data.status < 500) {
-            this._customFailed();
+            this._customFailed(result);
             return;
         }
 
-        this.uploadingSizes[package.uploadIndex] = 0;
+        this.channels[package.channelIndex] = 0;
 
         if (this.options.retry >= package.uploadTimes) {
             this.queue.push(package);
@@ -182,12 +118,12 @@
             return;
         }
 
-        this._customFailed();
+        this._customFailed(result);
     };
 
-    Plugin.prototype._customFailed = function () {
+    Plugin.prototype._customFailed = function (result) {
         if (this.options.failed) {
-            this.options.failed();
+            this.options.failed(result);
         }
     };
 
@@ -201,7 +137,18 @@
         this.totalUploadedSize = 0;
 
         this.queue = [];
-        this.uploadingSizes = [];
+        this.channels = [];
+    };
+
+    Plugin.prototype._result = function (data, package) {
+        return {
+            status: data.status,
+            response: data.response,
+            file: package.name, //Current file.
+            total: this.totalSize,
+            loaded: this.totalUploadedSize,
+            percentage: this._percentage()
+        };
     };
 
     Plugin.prototype._enqueue = function (file) {
@@ -219,28 +166,28 @@
         }
     };
 
-    Plugin.prototype._percentage = function (uploadingSize) {
+    Plugin.prototype._percentage = function () {
         if (this.totalSize == 0) {
             return 0;
         }
 
         var size = this.totalUploadedSize;
 
-        for (var i in this.uploadingSizes) {
-            size += this.uploadingSizes[i];
+        for (var i in this.channels) {
+            size += this.channels[i];
         }
 
         return Math.floor(100 * size / this.totalSize);
     };
 
-    Plugin.prototype._upload = function (uploadIndex) {
+    Plugin.prototype._upload = function (channelIndex) {
         var package = this.queue.shift();
 
         if (!package) {
             return;
         }
 
-        package.uploadIndex = uploadIndex;
+        package.channelIndex = channelIndex;
 
         if (this.options.checksum) {
             this.options.checksum(package.file, function (value) {
@@ -255,6 +202,77 @@
     };
 
     /* Methods end */
+
+    /* Package */
+
+    function Package(uploader, file, pieceCount, pieceIndex) {
+        this.name = ''; //File or file piece name.
+        this.file = null; //File or file piece.
+        this.size = 0; //Actual size of file not file piece.
+        this.count = 1; //Amount of file pieces, 1 for whole file.
+        this.checksum = null; //Checksum of file or file piece.
+        this.timestamp = 0; //Timestamp for uploading.
+        this.properties = Object.keys(this);
+
+        this.uploadTimes = 0;
+        this.channelIndex = 0;
+        this.set(file, pieceCount, pieceIndex);
+        var self = this;
+
+        this.httpRequest = new HttpRequest({
+            url: uploader.options.url,
+            method: 'POST',
+            dataType: uploader.options.dataType,
+            progress: function (data) {
+                uploader._progress(data, self);
+            },
+            complete: function (data) {
+                uploader._progress(data, self);
+            },
+            failed: function (data) {
+                uploader._failed(data, self);
+            }
+        });
+    }
+
+    Package.prototype.constructor = Package;
+
+    Package.prototype.set = function (file, pieceCount, pieceIndex) {
+        if (pieceCount == 1) {
+            this.name = file.name;
+            this.file = file;
+            this.size = file.size;
+            return;
+        }
+
+        var start = pieceIndex * this.options.pieceSize;
+        var end = Math.min(file.size, start + this.options.pieceSize);
+
+        this.name = file.name + '_' + pieceIndex;
+        this.size = file.size;
+        this.file = file.slice(start, end);
+        this.count = pieceCount;
+    };
+
+    Package.prototype.toFormData = function (formData) {
+        if (!formData) {
+            formData = new FormData();
+        }
+
+        for (var name in this.properties) {
+            formData.append(name, this[name]);
+        }
+
+        return formData;
+    };
+
+    Package.prototype.upload = function () {
+        this.uploadTimes++;
+        this.timestamp = new Date().getTime();
+        this.httpRequest.request(this.toFormData());
+    };
+
+    /* Package end */
 
     /* Public methods */
 

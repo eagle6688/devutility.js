@@ -13,6 +13,7 @@
         timeout: 0,
         withCredentials: true,
         headers: null,
+        dataType: 'json',
         progress: function (data) {},
         complete: function (data) {},
         failed: function (data) {},
@@ -112,12 +113,17 @@
     /* Methods */
 
     Plugin.prototype._result = function (event) {
-        return {
+        var result = {
             event: event,
             status: this.xhr.status,
-            response: this.xhr.responseText,
             readyState: this.xhr.readyState
         };
+
+        if (this.options.dataType == 'json') {
+            result.response = $.parseJSON(this.xhr.responseText);
+        }
+
+        return result;
     };
 
     Plugin.prototype._setXhr = function () {
