@@ -15,7 +15,7 @@
         pieceSize: 1 * 1024 * 1024, //Bytes for each piece, worked if "needSlice"=true.
         retry: 1, //Retry times after upload failed.
         formData: null, //FormData for each upload request.
-        checksum: function (file, callback) {}, //Function to calculate file's checksum, callback(checksumValue).
+        checksum: null, //Function to calculate file's checksum, format: function (file, callback) {}, callback(checksumValue).
         progress: function (data) {}, //Target while uploading files.
         complete: function (data) {}, //Target while upload completed.
         failed: function (data) {} //Target while upload failed.
@@ -47,11 +47,6 @@
             return false;
         }
 
-        if (!this.options.files || this.options.files.length == 0) {
-            console.error('Need paramter "files"!');
-            return false;
-        }
-
         if (this.options.concurrency < 1) {
             console.error('Invalid paramter "concurrency"!');
             return false;
@@ -78,22 +73,20 @@
         if (data.event.loaded == data.event.total && data.event.type == 'load') {
             this.totalUploadedSize += data.event.loaded;
             this.channels[package.channelIndex] = 0;
+
+            if (this.totalSize == this.totalUploadedSize) {
+                this._complete(this._result(data, package));
+                return;
+            }
         } else {
             this.channels[package.channelIndex] = data.event.loaded;
         }
 
-        var result = this._result(data, package);
-
         if (this.options.progress) {
-            this.options.progress(result);
+            this.options.progress(this._result(data, package));
         }
 
-        if (this.totalSize == this.totalUploadedSize) {
-            this._upload();
-            return;
-        }
-
-        this._complete(result);
+        this._upload();
     };
 
     Plugin.prototype._complete = function (result) {
