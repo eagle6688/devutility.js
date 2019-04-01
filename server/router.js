@@ -1,4 +1,4 @@
-module.exports = function (router) {
+module.exports = function (router, upload) {
     router.use(function (request, response, next) {
         console.log('Time:', Date.now().toString(), request.path);
         next();
@@ -11,5 +11,6 @@ module.exports = function (router) {
     require('./controllers/dataController')(router);
     require('./controllers/userController')(router);
     require('./controllers/systemController')(router);
+    require('./controllers/uploadController')(router, upload);
     return router;
 };

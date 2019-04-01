@@ -61,3 +61,11 @@ $('#btn-concurrency-get').click(function () {
     httpRequestB.request();
     httpRequestC.request();
 });
+
+$('#btn-upload').click(function () {
+    options.url = '/upload';
+    options.method = 'POST';
+    options.dataType = 'text';
+    var httpRequest = new HttpRequest(options);
+    httpRequest.request(new FormData(document.getElementById('form-upload')));
+});
