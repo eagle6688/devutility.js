@@ -44,7 +44,6 @@
         this._bind();
     };
 
-
     Plugin.prototype._verify = function () {
         if (!this.options.url) {
             console.error('Need paramter "url"!');
@@ -134,6 +133,10 @@
 
         this.options.request.addEventListener('abort', function (event) {
             self.abort(event);
+        });
+
+        this.options.request.addEventListener('timeout', function (event) {
+            self.failed(event);
         });
     };
 

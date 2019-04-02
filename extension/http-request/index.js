@@ -102,7 +102,8 @@ $('#btn-upload').click(function () {
 $('#btn-upload-without-response').click(function () {
     var options = $.extend(true, {}, defaults, {
         url: $('#txt-upload-without-response-url').val(),
-        method: 'POST'
+        method: 'POST',
+        timeout: ~~$('#txt-upload-without-response-timeout').val()
     });
 
     var httpRequest = new HttpRequest(options);

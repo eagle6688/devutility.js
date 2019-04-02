@@ -42,13 +42,21 @@
             </div>
             <button id="btn-upload" type="button" class="btn btn-primary">Upload</button>
         </form>
-        <h5 class="marginTop20">Upload without response</h5>
+        <div class="marginTop20 form-inline">
+            <h5 style="margin: 0;">Upload without response</h5>
+            <div class="alert-danger ml-2">
+                If timeout = 0 and no response from backend, once you remove the uploaded file in backend, the upload process will re-target.
+            </div>
+        </div>
         <form id="form-upload-without-response" method="POST" type="multipart/form-data" class="form-row">
             <div class="col-2">
                 <input id="txt-upload-without-response-url" type="text" value="http://localhost:9000/upload?noresponse=1" class="form-control" placeholder="Url">
             </div>
             <div class="col-2 form-inline">
                 <input name="file" type="file" class="form-control-file">
+            </div>
+            <div class="col-1">
+                <input id="txt-upload-without-response-timeout" type="text" value="1000" class="form-control" placeholder="Timeout">
             </div>
             <button id="btn-upload-without-response" type="button" class="btn btn-primary">Upload</button>
         </form>
