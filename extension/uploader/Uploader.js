@@ -81,7 +81,7 @@
             this.channels[package.channelIndex] = data.event.loaded;
         } else if (data.type == 'upload-load') {
             if (data.event.loaded == data.event.total) {
-                this.totalUploadedSize += data.event.loaded;
+                this.totalUploadedSize += package.size;
                 this.channels[package.channelIndex] = 0;
             }
         } else if (data.type == 'load') {
