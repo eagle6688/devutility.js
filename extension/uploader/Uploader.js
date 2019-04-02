@@ -81,7 +81,7 @@
             this.channels[package.channelIndex] = data.event.loaded;
         } else if (data.type == 'upload-load') {
             if (data.event.loaded == data.event.total) {
-                this.totalUploadedSize += package.size;
+                this.totalUploadedSize += package.file.size;
                 this.channels[package.channelIndex] = 0;
             }
         } else if (data.type == 'load') {
@@ -215,11 +215,11 @@
     /* Package */
 
     function Package(uploader, file, pieceCount, pieceIndex) {
-        this.name = ''; //File or file piece name.
-        this.file = null; //File or file piece.
-        this.size = 0; //Actual size of file not file piece.
-        this.count = 1; //Amount of file pieces, 1 for whole file.
-        this.checksum = null; //Checksum of file or file piece.
+        this.fileSize = 0; //Size of file.
+        this.file = null; //File or blob.
+        this.name = ''; //Name of file or blob.
+        this.count = 1; //Amount of blob, 1 for whole file.
+        this.checksum = null; //Checksum value of file or blob.
         this.timestamp = 0; //Timestamp for uploading.
         this.properties = Object.keys(this);
 
@@ -259,18 +259,19 @@
     Package.prototype.constructor = Package;
 
     Package.prototype.set = function (file, pieceCount, pieceIndex) {
+        this.fileSize = file.size;
+
         if (pieceCount == 1) {
-            this.name = file.name;
             this.file = file;
-            this.size = file.size;
+            this.name = file.name;
             return;
         }
 
-        var start = pieceIndex * this.uploader.options.pieceSize;
-        var end = Math.min(file.size, start + this.uploader.options.pieceSize);
+        var pieceSize = this.uploader.options.pieceSize;
+        var start = pieceIndex * pieceSize;
+        var end = Math.min(file.size, start + pieceSize);
 
         this.name = file.name + '_' + pieceIndex;
-        this.size = file.size;
         this.file = file.slice(start, end);
         this.count = pieceCount;
     };
