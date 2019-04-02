@@ -1,6 +1,6 @@
 /**
  * Background.js v20190310
- * dependency: jQuery.js, devutility.js
+ * dependency: jQuery.js
  * @license: License: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 

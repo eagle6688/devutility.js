@@ -1,6 +1,6 @@
 /**
  * Popuper.js v20190309
- * dependency: jQuery.js, Background.js, devutility.js
+ * dependency: jQuery.js, Background.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 

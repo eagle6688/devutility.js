@@ -16,6 +16,7 @@
         retry: 1, //Retry times after upload failed.
         formData: null, //FormData for each upload request.
         checksum: null, //Function to calculate file's checksum, format: function (file, callback) {}, callback(checksumValue).
+        start: function (data) {}, //Target while begin uploading.
         progress: function (data) {}, //Target while uploading files.
         complete: function (data) {}, //Target while upload completed.
         failed: function (data) {} //Target while upload failed.
@@ -68,6 +69,12 @@
     /* Init methods end */
 
     /* Event methods */
+
+    Plugin.prototype._start = function (data, package) {
+        if (this.options.start) {
+            this.options.start(this._result(data, package));
+        }
+    };
 
     Plugin.prototype._progress = function (data, package) {
         if (data.type == 'upload-progress') {
@@ -137,11 +144,12 @@
 
     Plugin.prototype._result = function (data, package) {
         return {
+            type: data.type,
             status: data.status,
             response: data.response,
             file: package.name, //Current file.
             total: this.totalSize,
-            loaded: this.totalUploadedSize,
+            loaded: this.totalUploadedSize + this._totalUploadingSize(),
             percentage: this._percentage()
         };
     };
@@ -161,17 +169,23 @@
         }
     };
 
+    Plugin.prototype._totalUploadingSize = function () {
+        var size = 0;
+
+        for (var i in this.channels) {
+            size += this.channels[i];
+        }
+
+        return size;
+    };
+
     Plugin.prototype._percentage = function () {
         if (this.totalSize == 0) {
             return 0;
         }
 
         var size = this.totalUploadedSize;
-
-        for (var i in this.channels) {
-            size += this.channels[i];
-        }
-
+        size += this._totalUploadingSize();
         return Math.floor(100 * size / this.totalSize);
     };
 
@@ -225,8 +239,10 @@
                 uploader._failed(data, self);
             },
             upload: {
+                loadstart: function (data) {
+                    uploader._start(data, self);
+                },
                 progress: function (data) {
-                    console.log(data);
                     uploader._progress(data, self);
                 },
                 complete: function (data) {
