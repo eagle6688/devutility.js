@@ -9,7 +9,7 @@
 
     var defaults = {
         url: '', //Post url for uploading file.
-        dataType: 'json', //Data type of response.
+        responseType: 'json', //Data type of response.
         concurrency: 1, //Concurrency thread for uploading.
         needSlice: false, //Whether slice a file to multi pieces or not?
         pieceSize: 1 * 1024 * 1024, //Bytes for each piece, worked if "needSlice"=true.
@@ -70,16 +70,18 @@
     /* Event methods */
 
     Plugin.prototype._progress = function (data, package) {
-        if (data.event.loaded == data.event.total && data.event.type == 'load') {
-            this.totalUploadedSize += data.event.loaded;
-            this.channels[package.channelIndex] = 0;
-
+        if (data.type == 'upload-progress') {
+            this.channels[package.channelIndex] = data.event.loaded;
+        } else if (data.type == 'upload-load') {
+            if (data.event.loaded == data.event.total) {
+                this.totalUploadedSize += data.event.loaded;
+                this.channels[package.channelIndex] = 0;
+            }
+        } else if (data.type == 'load') {
             if (this.totalSize == this.totalUploadedSize) {
                 this._complete(this._result(data, package));
                 return;
             }
-        } else {
-            this.channels[package.channelIndex] = data.event.loaded;
         }
 
         if (this.options.progress) {
@@ -215,7 +217,7 @@
         this.httpRequest = new HttpRequest({
             url: uploader.options.url,
             method: 'POST',
-            dataType: uploader.options.dataType,
+            responseType: uploader.options.responseType,
             complete: function (data) {
                 uploader._progress(data, self);
             },
@@ -224,6 +226,7 @@
             },
             upload: {
                 progress: function (data) {
+                    console.log(data);
                     uploader._progress(data, self);
                 },
                 complete: function (data) {
@@ -260,8 +263,10 @@
             formData = new FormData();
         }
 
-        for (var name in this.properties) {
-            formData.append(name, this[name]);
+        for (var index in this.properties) {
+            var name = this.properties[index];
+            var value = this[name];
+            formData.append(name, value);
         }
 
         return formData;

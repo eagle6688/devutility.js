@@ -177,7 +177,8 @@
             type: event.type,
             event: event,
             status: 0,
-            readyState: 0
+            readyState: 0,
+            response: null
         };
 
         if (Object.prototype.toString.call(event.target) == '[object XMLHttpRequestUpload]') {

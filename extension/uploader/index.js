@@ -1,4 +1,4 @@
-var options = {
+var defaults = {
     progress: function (data) {
         console.log(data);
     },
@@ -11,7 +11,14 @@ var options = {
 };
 
 $('#btn-upload').click(function () {
-    options.url = $('#txt-url').val();
+    var options = $.extend(true, {}, defaults, {
+        url: $('#txt-url').val()
+    });
+
+    var files = document.getElementById('file').files;
+    console.log(files.length);
+    console.log(files[0].size);
+
     var uploader = new Uploader(options);
-    uploader.upload(document.getElementById('file').files);
+    uploader.upload(files);
 });
