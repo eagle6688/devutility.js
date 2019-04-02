@@ -101,6 +101,7 @@ $('#btn-upload').click(function () {
         dataType: 'json'
     });
 
+    console.log(document.getElementById('file-upload').files[0]);
     var httpRequest = new HttpRequest(options);
     httpRequest.request(new FormData(document.getElementById('form-upload')));
 });
