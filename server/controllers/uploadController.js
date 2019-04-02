@@ -6,6 +6,10 @@ module.exports = function (router, upload) {
             throw new Error("Error response!");
         }
 
+        if (request.query.noresponse) {
+            return;
+        }
+
         let result = new OperationResult();
         response.json(result);
     });

@@ -216,14 +216,22 @@
             url: uploader.options.url,
             method: 'POST',
             dataType: uploader.options.dataType,
-            progress: function (data) {
-                uploader._progress(data, self);
-            },
             complete: function (data) {
                 uploader._progress(data, self);
             },
             failed: function (data) {
                 uploader._failed(data, self);
+            },
+            upload: {
+                progress: function (data) {
+                    uploader._progress(data, self);
+                },
+                complete: function (data) {
+                    uploader._progress(data, self);
+                },
+                failed: function (data) {
+                    uploader._failed(data, self);
+                }
             }
         });
     }

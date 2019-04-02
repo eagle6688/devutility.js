@@ -33,11 +33,24 @@
             </div>
         </div>
         <h5 class="marginTop20">Upload</h5>
-        <form id="form-upload" method="POST" type="multipart/form-data" class="form-inline">
-            <div class="form-group mb-2">
-                <input id="file-upload" name="file" type="file" class="form-control-file">
+        <form id="form-upload" method="POST" type="multipart/form-data" class="form-row">
+            <div class="col-2">
+                <input id="txt-upload-url" type="text" value="http://localhost:9000/upload" class="form-control" placeholder="Url">
+            </div>
+            <div class="col-2 form-inline">
+                <input name="file" type="file" class="form-control-file">
             </div>
             <button id="btn-upload" type="button" class="btn btn-primary">Upload</button>
+        </form>
+        <h5 class="marginTop20">Upload without response</h5>
+        <form id="form-upload-without-response" method="POST" type="multipart/form-data" class="form-row">
+            <div class="col-2">
+                <input id="txt-upload-without-response-url" type="text" value="http://localhost:9000/upload?noresponse=1" class="form-control" placeholder="Url">
+            </div>
+            <div class="col-2 form-inline">
+                <input name="file" type="file" class="form-control-file">
+            </div>
+            <button id="btn-upload-without-response" type="button" class="btn btn-primary">Upload</button>
         </form>
     </div>
     <script src="index.js"></script>

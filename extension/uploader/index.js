@@ -7,17 +7,6 @@ var options = {
     },
     failed: function (data) {
         console.log(data);
-    },
-    upload: {
-        progress: function (data) {
-            console.log(data);
-        },
-        complete: function (data) {
-            console.log(data);
-        },
-        failed: function (data) {
-            console.log(data);
-        }
     }
 };
 

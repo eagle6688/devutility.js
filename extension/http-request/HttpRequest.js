@@ -13,7 +13,7 @@
         timeout: 0,
         withCredentials: true,
         headers: null,
-        dataType: 'json',
+        responseType: null,
         progress: function (data) {},
         complete: function (data) {},
         failed: function (data) {},
@@ -59,11 +59,8 @@
     /* Bind methods */
 
     Plugin.prototype._bind = function () {
-        var self = this;
-
         this.requestEvent = new RequestEvent({
             request: this.xhr,
-            dataType: this.options.dataType,
             progress: this.options.progress,
             complete: this.options.complete,
             failed: this.options.failed,
@@ -72,7 +69,6 @@
 
         this.uploadRequestEvent = new RequestEvent({
             request: this.xhr.upload,
-            dataType: this.options.dataType,
             progress: this.options.upload.progress,
             complete: this.options.upload.complete,
             failed: this.options.upload.failed,
@@ -98,6 +94,10 @@
                 this.setRequestHeader(name, this.options.headers[name]);
             }
         }
+
+        if (this.options.responseType) {
+            this.xhr.responseType = this.options.responseType;
+        }
     };
 
     /* Methods end */
@@ -107,7 +107,6 @@
     function RequestEvent(options) {
         var defaults = {
             request: null,
-            dataType: null,
             progress: function (data) {},
             complete: function (data) {},
             failed: function (data) {},
@@ -185,13 +184,7 @@
 
         result.status = event.target.status;
         result.readyState = event.target.readyState;
-
-        if (this.options.dataType == 'json') {
-            result.response = $.parseJSON(event.target.responseText);
-        } else {
-            result.response = event.target.responseText;
-        }
-
+        result.response = event.target.response;
         return result;
     };
 
