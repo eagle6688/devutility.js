@@ -39,7 +39,8 @@ $('#btn-upload').click(function () {
 $('#btn-upload-slice').click(function () {
     var options = $.extend(true, {}, defaults, {
         url: $('#txt-url-upload-slice').val(),
-        needSlice: true
+        needSlice: true,
+        pieceSize: 100 * 1024
     });
 
     var uploader = new Uploader(options);

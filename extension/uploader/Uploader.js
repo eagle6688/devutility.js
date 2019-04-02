@@ -216,11 +216,11 @@
 
     function Package(uploader, file, pieceCount, pieceIndex) {
         this.fileSize = 0; //Size of file.
-        this.file = null; //File or blob.
         this.name = ''; //Name of file or blob.
         this.count = 1; //Amount of blob, 1 for whole file.
         this.checksum = null; //Checksum value of file or blob.
         this.timestamp = 0; //Timestamp for uploading.
+        this.file = null; //File or blob, must put file property at the end of properties list, no property will be parsed by node.js after file.
         this.properties = Object.keys(this);
 
         this.uploadTimes = 0;
