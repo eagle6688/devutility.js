@@ -14,11 +14,13 @@
         withCredentials: true,
         headers: null,
         responseType: null,
+        loadstart: function (data) {},
         progress: function (data) {},
         complete: function (data) {},
         failed: function (data) {},
         abort: function (data) {},
         upload: {
+            loadstart: function (data) {},
             progress: function (data) {},
             complete: function (data) {},
             failed: function (data) {},
@@ -60,6 +62,7 @@
     Plugin.prototype._bind = function () {
         this.requestEvent = new RequestEvent({
             request: this.xhr,
+            loadstart: this.options.loadstart,
             progress: this.options.progress,
             complete: this.options.complete,
             failed: this.options.failed,
@@ -68,6 +71,7 @@
 
         this.uploadRequestEvent = new RequestEvent({
             request: this.xhr.upload,
+            loadstart: this.options.upload.loadstart,
             progress: this.options.upload.progress,
             complete: this.options.upload.complete,
             failed: this.options.upload.failed,
@@ -106,6 +110,7 @@
     function RequestEvent(options) {
         var defaults = {
             request: null,
+            loadstart: function (data) {},
             progress: function (data) {},
             complete: function (data) {},
             failed: function (data) {},
@@ -118,6 +123,10 @@
 
     RequestEvent.prototype.bind = function () {
         var self = this;
+
+        this.options.request.addEventListener('loadstart', function (event) {
+            self.loadstart(event);
+        });
 
         this.options.request.addEventListener('progress', function (event) {
             self.progress(event);
@@ -138,6 +147,14 @@
         this.options.request.addEventListener('timeout', function (event) {
             self.failed(event);
         });
+    };
+
+    RequestEvent.prototype.loadstart = function (event) {
+        var result = this.result(event);
+
+        if (this.options.loadstart) {
+            this.options.loadstart(result);
+        }
     };
 
     RequestEvent.prototype.progress = function (event) {

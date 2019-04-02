@@ -10,6 +10,10 @@ var defaults = {
     }
 };
 
+var progress = new Popuper({
+    selector: '.progress'
+});
+
 $('#btn-upload').click(function () {
     var options = $.extend(true, {}, defaults, {
         url: $('#txt-url').val()

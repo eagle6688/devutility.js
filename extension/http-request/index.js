@@ -1,4 +1,7 @@
 var defaults = {
+    loadstart: function (data) {
+        console.log(data);
+    },
     progress: function (data) {
         console.log(data);
     },
@@ -12,6 +15,9 @@ var defaults = {
         console.log(data);
     },
     upload: {
+        loadstart: function (data) {
+            console.log(data);
+        },
         progress: function (data) {
             console.log(data);
         },
