@@ -17,15 +17,25 @@
     <div class="main">
         <h3>Uploader.js</h3>
         <hr />
-        <h5 class="marginTop20">upload(files) with no FormData and no slice</h5>
+        <h5 class="marginTop20">upload(files)</h5>
         <div class="form-row">
             <div class="col-2">
                 <input id="txt-url" type="text" value="http://localhost:9000/upload" class="form-control" placeholder="Url">
             </div>
             <div class="col-2 form-inline">
-                <input id="file" type="file" class="form-control-file">
+                <input id="file" type="file" class="form-control-file" multiple="multiple">
             </div>
             <button id="btn-upload" type="button" class="btn btn-primary">Upload</button>
+        </div>
+        <h5 class="marginTop20">upload(files) with slice</h5>
+        <div class="form-row">
+            <div class="col-2">
+                <input id="txt-url-upload-slice" type="text" value="http://localhost:9000/upload" class="form-control" placeholder="Url">
+            </div>
+            <div class="col-2 form-inline">
+                <input id="file-upload-slice" type="file" class="form-control-file" multiple="multiple">
+            </div>
+            <button id="btn-upload-slice" type="button" class="btn btn-primary">Upload</button>
         </div>
         <div class="form-row">
             <div class="col col-2">

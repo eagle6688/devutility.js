@@ -225,6 +225,7 @@
 
         this.uploadTimes = 0;
         this.channelIndex = 0;
+        this.uploader = uploader;
         this.set(file, pieceCount, pieceIndex);
         var self = this;
 
@@ -265,8 +266,8 @@
             return;
         }
 
-        var start = pieceIndex * this.options.pieceSize;
-        var end = Math.min(file.size, start + this.options.pieceSize);
+        var start = pieceIndex * this.uploader.options.pieceSize;
+        var end = Math.min(file.size, start + this.uploader.options.pieceSize);
 
         this.name = file.name + '_' + pieceIndex;
         this.size = file.size;

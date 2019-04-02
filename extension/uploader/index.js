@@ -16,6 +16,7 @@ var defaults = {
     complete: function (data) {
         console.log(data);
         progress.hideAll();
+        progressBar.css('width', '0').attr('aria-valuenow', 0);
     },
     failed: function (data) {
         console.log(data);
@@ -33,4 +34,14 @@ $('#btn-upload').click(function () {
 
     var uploader = new Uploader(options);
     uploader.upload(files);
+});
+
+$('#btn-upload-slice').click(function () {
+    var options = $.extend(true, {}, defaults, {
+        url: $('#txt-url-upload-slice').val(),
+        needSlice: true
+    });
+
+    var uploader = new Uploader(options);
+    uploader.upload(document.getElementById('file-upload-slice').files);
 });
