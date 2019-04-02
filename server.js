@@ -19,6 +19,11 @@ var upload = multer({
             cb(null, 'server/uploads');
         },
         filename: function (req, file, cb) {
+            if (file.originalname == 'blob') {
+                cb(null, req.body.name);
+                return;
+            }
+
             cb(null, file.originalname);
         }
     })
