@@ -56,8 +56,7 @@ $('#btn-upload-concurrent-slice').click(function () {
     var options = $.extend(true, {}, defaults, {
         url: $('#txt-url-upload-concurrent-slice').val(),
         concurrency: 3,
-        needSlice: true,
-        pieceSize: 100 * 1024
+        needSlice: true
     });
 
     var uploader = new Uploader(options);
