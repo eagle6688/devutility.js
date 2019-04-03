@@ -90,11 +90,7 @@
         }
 
         var result = this._result(data, package);
-        result.type = 'progress';
-
-        if (this.options.progress) {
-            this.options.progress(result);
-        }
+        this._customProgress(result);
 
         if (data.type == 'load' && this.totalSize == this.totalUploadedSize) {
             this._complete(result);
@@ -102,6 +98,14 @@
         }
 
         this._upload();
+    };
+
+    Plugin.prototype._customProgress = function (result) {
+        result.type = 'progress';
+
+        if (this.options.progress) {
+            this.options.progress(result);
+        }
     };
 
     Plugin.prototype._complete = function (result) {
