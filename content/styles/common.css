@@ -22,6 +22,10 @@ hr {
     margin-top: 20px;
 }
 
+.form-inline {
+    overflow: hidden;
+}
+
 .row button {
     margin-right: 10px;
 }

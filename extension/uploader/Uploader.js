@@ -71,34 +71,42 @@
     /* Event methods */
 
     Plugin.prototype._start = function (data, package) {
+        var result = this._result(data, package);
+        result.type = 'start';
+
         if (this.options.start) {
-            this.options.start(this._result(data, package));
+            this.options.start(result);
         }
     };
 
     Plugin.prototype._progress = function (data, package) {
         if (data.type == 'upload-progress') {
             this.channels[package.channelIndex] = data.event.loaded;
-        } else if (data.type == 'upload-load') {
+        } else if (data.type == 'load') {
             if (data.event.loaded == data.event.total) {
                 this.totalUploadedSize += package.file.size;
                 this.channels[package.channelIndex] = 0;
             }
-        } else if (data.type == 'load') {
-            if (this.totalSize == this.totalUploadedSize) {
-                this._complete(this._result(data, package));
-                return;
-            }
         }
 
+        var result = this._result(data, package);
+        result.type = 'progress';
+
         if (this.options.progress) {
-            this.options.progress(this._result(data, package));
+            this.options.progress(result);
+        }
+
+        if (data.type == 'load' && this.totalSize == this.totalUploadedSize) {
+            this._complete(result);
+            return;
         }
 
         this._upload();
     };
 
     Plugin.prototype._complete = function (result) {
+        result.type = 'complete';
+
         if (this.options.complete) {
             this.options.complete(result);
         }
@@ -124,6 +132,8 @@
     };
 
     Plugin.prototype._customFailed = function (result) {
+        result.type = 'failed';
+
         if (this.options.failed) {
             this.options.failed(result);
         }
@@ -144,7 +154,7 @@
 
     Plugin.prototype._result = function (data, package) {
         return {
-            type: data.type,
+            type: '',
             status: data.status,
             response: data.response,
             file: package.name, //Current file.
@@ -235,6 +245,7 @@
             responseType: uploader.options.responseType,
             complete: function (data) {
                 uploader._progress(data, self);
+                self = null;
             },
             failed: function (data) {
                 uploader._failed(data, self);

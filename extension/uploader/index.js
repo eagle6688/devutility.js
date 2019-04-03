@@ -15,11 +15,17 @@ var defaults = {
     },
     complete: function (data) {
         console.log(data);
-        progress.hideAll();
-        progressBar.css('width', '0').attr('aria-valuenow', 0);
+
+        if (confirm('The file has been uploaded completed!')) {
+            progress.hideAll();
+            progressBar.css('width', '0').attr('aria-valuenow', 0);
+        }
     },
     failed: function (data) {
+        console.log('Failed');
         console.log(data);
+        progress.hideAll();
+        progressBar.css('width', '0').attr('aria-valuenow', 0);
     }
 };
 
@@ -39,10 +45,21 @@ $('#btn-upload').click(function () {
 $('#btn-upload-slice').click(function () {
     var options = $.extend(true, {}, defaults, {
         url: $('#txt-url-upload-slice').val(),
+        needSlice: true
+    });
+
+    var uploader = new Uploader(options);
+    uploader.upload(document.getElementById('file-upload-slice').files);
+});
+
+$('#btn-upload-concurrent-slice').click(function () {
+    var options = $.extend(true, {}, defaults, {
+        url: $('#txt-url-upload-concurrent-slice').val(),
+        concurrency: 3,
         needSlice: true,
         pieceSize: 100 * 1024
     });
 
     var uploader = new Uploader(options);
-    uploader.upload(document.getElementById('file-upload-slice').files);
+    uploader.upload(document.getElementById('file-upload-concurrent-slice').files);
 });
