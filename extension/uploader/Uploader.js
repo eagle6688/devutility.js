@@ -81,11 +81,15 @@
 
     Plugin.prototype._progress = function (data, package) {
         if (data.type == 'upload-progress') {
-            this.channels[package.channelIndex] = data.event.loaded;
+            this.channels[package.channelIndex] = {
+                total: data.event.total,
+                loaded: data.event.loaded,
+                size: package.file.size
+            };
         } else if (data.type == 'load') {
             if (data.event.loaded == data.event.total) {
                 this.totalUploadedSize += package.file.size;
-                this.channels[package.channelIndex] = 0;
+                this.channels[package.channelIndex] = null;
             }
         }
 
@@ -124,7 +128,7 @@
             return;
         }
 
-        this.channels[package.channelIndex] = 0;
+        this.channels[package.channelIndex] = null;
 
         if (this.options.retry >= package.uploadTimes) {
             this.queue.push(package);
@@ -159,11 +163,12 @@
     Plugin.prototype._result = function (data, package) {
         return {
             type: '',
+            httpType: data.type,
             status: data.status,
             response: data.response,
             file: package.name, //Current file.
             total: this.totalSize,
-            loaded: this.totalUploadedSize + this._totalUploadingSize(),
+            loaded: this._totalLoadedSize(),
             percentage: this._percentage()
         };
     };
@@ -183,11 +188,11 @@
         }
     };
 
-    Plugin.prototype._totalUploadingSize = function () {
-        var size = 0;
+    Plugin.prototype._totalLoadedSize = function () {
+        var size = this.totalUploadedSize;
 
         for (var i in this.channels) {
-            size += this.channels[i];
+            size += this.channels[i] != null ? this.channels[i].loaded : 0;
         }
 
         return size;
@@ -198,9 +203,16 @@
             return 0;
         }
 
-        var size = this.totalUploadedSize;
-        size += this._totalUploadingSize();
-        return Math.floor(100 * size / this.totalSize);
+        var totalLoadedSize = this._totalLoadedSize();
+        var totalSize = this.totalSize;
+
+        for (var i in this.channels) {
+            if (this.channels[i] != null) {
+                totalSize += this.channels[i].total - this.channels[i].size;
+            }
+        }
+
+        return Math.floor(100 * totalLoadedSize / totalSize);
     };
 
     Plugin.prototype._upload = function (channelIndex) {
@@ -259,9 +271,6 @@
                     uploader._start(data, self);
                 },
                 progress: function (data) {
-                    uploader._progress(data, self);
-                },
-                complete: function (data) {
                     uploader._progress(data, self);
                 },
                 failed: function (data) {
