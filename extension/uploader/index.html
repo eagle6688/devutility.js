@@ -10,6 +10,7 @@
     <script src="../http-request/HttpRequest.js"></script>
     <script src="../background/Background.js"></script>
     <script src="../popuper/Popuper.js"></script>
+    <script src="../devutility/devutility.js"></script>
     <script src="Uploader.js"></script>
 </head>
 
@@ -47,13 +48,21 @@
             </div>
             <button id="btn-upload-concurrent-slice" type="button" class="btn btn-primary">Upload</button>
         </div>
+        <h5 class="marginTop20">upload(files) with invalid size and extension</h5>
         <div class="form-row">
-            <div class="col col-2">
-                <input id="txt-key1" type="text" class="form-control" value="key1" placeholder="Key">
+            <div class="col-2">
+                <input id="txt-url-upload-invalid-size-extension" type="text" value="http://localhost:9000/upload" class="form-control" placeholder="Url">
             </div>
-            <div class="col col-2">
-                <input id="txt-value1" type="text" class="form-control" value="value1" placeholder="Value">
+            <div class="col-1">
+                <input id="txt-size-upload-invalid-size-extension" type="text" value="1000" class="form-control" placeholder="Size Limit">
             </div>
+            <div class="col-1">
+                <input id="txt-extension-upload-invalid-size-extension" type="text" value=".jpg,.png" class="form-control" placeholder="Allowed extensions">
+            </div>
+            <div class="col-2 form-inline">
+                <input id="file-upload-invalid-size-extension" type="file" class="form-control-file" multiple="multiple">
+            </div>
+            <button id="btn-upload-invalid-size-extension" type="button" class="btn btn-primary">Upload</button>
         </div>
     </div>
     <div class="progress" style="width: 500px; display: none;">

@@ -15,8 +15,6 @@ var defaults = {
     },
     complete: function (data) {
         console.log(data);
-        console.debug('ok');
-        document.getElementById("progress-bar").style.width = '500px';
 
         if (confirm('The file has been uploaded completed!')) {
             progress.hideAll();
@@ -24,6 +22,7 @@ var defaults = {
         }
     },
     failed: function (data) {
+        alert('Error!');
         console.log('Failed');
         console.log(data);
         progress.hideAll();
@@ -63,4 +62,16 @@ $('#btn-upload-concurrent-slice').click(function () {
 
     var uploader = new Uploader(options);
     uploader.upload(document.getElementById('file-upload-concurrent-slice').files);
+});
+
+$('#btn-upload-invalid-size-extension').click(function () {
+    var options = $.extend(true, {}, defaults, {
+        url: $('#txt-url-upload-invalid-size-extension').val(),
+        needSlice: true,
+        sizeLimit: ~~$('#txt-size-upload-invalid-size-extension').val(),
+        extensions: $('#txt-extension-upload-invalid-size-extension').val().split(',')
+    });
+
+    var uploader = new Uploader(options);
+    uploader.upload(document.getElementById('file-upload-invalid-size-extension').files);
 });

@@ -1,6 +1,6 @@
 /**
  * Uploader.js v20190322
- * dependency: jQuery.js, HttpRequest.js
+ * dependency: jQuery.js, HttpRequest.js, devutility.js
  * @license: MIT (c) Aldwin Su. https://github.com/eagle6688
  */
 
@@ -16,6 +16,8 @@
         retry: 1, //Retry times after upload failed.
         formData: null, //FormData for each upload request.
         checksum: null, //Function to calculate file's checksum, format: function (file, callback) {}, callback(checksumValue).
+        sizeLimit: 0, //Size limit for each file.
+        extensions: [], //File extensions allowed to upload, for example '.jpg'.
         start: function (data) {}, //Target while begin uploading.
         progress: function (data) {}, //Target while uploading files.
         complete: function (data) {}, //Target while upload completed.
@@ -165,16 +167,13 @@
     };
 
     Plugin.prototype._result = function (data, package) {
-        return {
-            type: '',
-            httpType: data.type,
-            status: data.status,
-            response: data.response,
-            file: package.name, //Current file.
-            total: this.totalSize,
-            loaded: this._totalLoadedSize(),
-            percentage: this._percentage()
-        };
+        var result = new UploaderResult();
+        result.set(data);
+        result.name = package.name;
+        result.total = this.totalSize;
+        result.loaded = this._totalLoadedSize();
+        result.percentage = this._percentage();
+        return result;
     };
 
     Plugin.prototype._enqueue = function (file) {
@@ -238,6 +237,61 @@
         }
 
         package.upload();
+    };
+
+    Plugin.prototype._verify = function (files) {
+        var result = this._verifySize(files);
+
+        if (result != null) {
+            this._customFailed(result);
+            return false;
+        }
+
+        result = this._verifyExtension(files);
+
+        if (result != null) {
+            this._customFailed(result);
+            return false;
+        }
+
+        return true;
+    };
+
+    Plugin.prototype._verifySize = function (files) {
+        var message = null;
+
+        if (this.options.sizeLimit == 0) {
+            return null;
+        }
+
+        for (var i = 0; i < files.length; i++) {
+            if (files[i].size > this.options.sizeLimit) {
+                message = 'The size of "' + files[i].name + '" exceed the limit of file size ' + this.options.sizeLimit;
+                return new UploaderErrorResult(files[i], -1, message);
+            }
+        }
+
+        return null;
+    };
+
+    Plugin.prototype._verifyExtension = function (files) {
+        var extension = null,
+            message = null;
+
+        if (this.options.extensions.length == 0) {
+            return null;
+        }
+
+        for (var i = 0; i < files.length; i++) {
+            extension = devutility.file.getExtension(files[i].name);
+
+            if (!devutility.array.contain(this.options.extensions, extension)) {
+                message = 'Invalid extension of "' + files[i].name + '" is not allowed to upload!';
+                return new UploaderErrorResult(files[i], -2, message);
+            }
+        }
+
+        return null;
     };
 
     /* Methods end */
@@ -328,10 +382,47 @@
 
     /* Package end */
 
+    /* Result */
+
+    function BaseUploaderResult() {
+        this.type = '';
+        this.name = '';
+        this.status = 0;
+        this.response = null;
+    }
+
+    function UploaderResult() {
+        BaseUploaderResult.call(this);
+        this.httpType = 0;
+        this.total = 0;
+        this.loaded = 0;
+        this.percentage = 0;
+    }
+
+    UploaderResult.prototype.set = function (data) {
+        this.status = data.status;
+        this.httpType = data.type;
+        this.response = data.response;
+    };
+
+    function UploaderErrorResult(file, status, message) {
+        BaseUploaderResult.call(this);
+        this.type = 'error';
+        this.name = file.name;
+        this.status = status;
+        this.response = message;
+    }
+
+    /* Result end */
+
     /* Public methods */
 
     Plugin.prototype.upload = function (files) {
         this._reset();
+
+        if (!this._verify(files)) {
+            return;
+        }
 
         for (var i = 0; i < files.length; i++) {
             this._enqueue(files[i]);
