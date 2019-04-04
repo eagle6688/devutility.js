@@ -96,7 +96,11 @@
         var result = this._result(data, package);
         this._customProgress(result);
 
-        if (data.type == 'load' && this.totalSize == this.totalUploadedSize) {
+        if (data.type != 'load') {
+            return;
+        }
+
+        if (this.totalSize == this.totalUploadedSize) {
             this._complete(result);
             return;
         }
@@ -241,11 +245,12 @@
     /* Package */
 
     function Package(uploader, file, pieceCount, pieceIndex) {
-        this.fileSize = 0; //Size of file.
         this.name = ''; //Name of file or blob.
         this.count = 1; //Amount of blob, 1 for whole file.
         this.checksum = null; //Checksum value of file or blob.
         this.timestamp = 0; //Timestamp for uploading.
+        this.fileSize = 0; //Size of file.
+        this.fileName = ''; //File name.
         this.file = null; //File or blob, must put file property at the end of properties list, no property will be parsed by node.js after file.
         this.properties = Object.keys(this);
 
@@ -284,6 +289,7 @@
 
     Package.prototype.set = function (file, pieceCount, pieceIndex) {
         this.fileSize = file.size;
+        this.fileName = file.name;
 
         if (pieceCount == 1) {
             this.file = file;
