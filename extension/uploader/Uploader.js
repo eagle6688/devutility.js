@@ -239,7 +239,7 @@
         package.upload();
     };
 
-    Plugin.prototype._verify = function (files) {
+    Plugin.prototype._verifyFiles = function (files) {
         var result = this._verifySize(files);
 
         if (result != null) {
@@ -420,7 +420,7 @@
     Plugin.prototype.upload = function (files) {
         this._reset();
 
-        if (!this._verify(files)) {
+        if (!this._verifyFiles(files)) {
             return;
         }
 
