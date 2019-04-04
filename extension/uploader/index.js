@@ -10,11 +10,13 @@ var defaults = {
         progress.showAll();
     },
     progress: function (data) {
+        document.getElementById("progress-bar").style.width = data.percentage + '%';
         console.log(data);
-        progressBar.css('width', data.percentage + '%').attr('aria-valuenow', data.percentage);
     },
     complete: function (data) {
         console.log(data);
+        console.debug('ok');
+        document.getElementById("progress-bar").style.width = '500px';
 
         if (confirm('The file has been uploaded completed!')) {
             progress.hideAll();
