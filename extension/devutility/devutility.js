@@ -493,6 +493,16 @@
         };
     };
 
+    image.getUrl = function (file) {
+        var windowURL = window.URL || window.webkitURL;
+
+        if (windowURL) {
+            return windowURL.createObjectURL(file);
+        }
+
+        return null;
+    };
+
     devutility.image = image;
 
     /* image end */
