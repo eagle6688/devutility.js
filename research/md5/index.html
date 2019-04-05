@@ -2,32 +2,43 @@
 <html>
 
 <head>
-    <title>MD5 - http://localhost:9000/research/md5/index.html</title>
+    <title>md5.js - http://localhost:9000/research/md5/index.html</title>
     <meta charset="utf-8" />
-    <script src="md5.js"></script>
+    <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../content/styles/common.css" rel="stylesheet" />
+    <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
+    <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../vendors/cryptojslib/md5.js"></script>
 </head>
 
 <body>
-    <div class="main marginTop10">
-        <h2>md5</h2>
-        <div class="marginTop10">
-            <input id="file-test" type="file" />
-            <input type="button" value="md5" onclick="md5();" />
+    <div class="main">
+        <h3>md5.js</h3>
+        <hr />
+        <div class="form-row">
+            <div class="col-2 form-inline">
+                <input id="file" type="file" class="form-control-file" multiple="multiple">
+            </div>
+            <button id="btn-md5" type="button" class="btn btn-primary">MD5</button>
         </div>
     </div>
     <script type="text/javascript">
-        function md5() {
+        $('#btn-md5').click(function () {
             var fileReader = new FileReader();
 
-            fileReader.onloadend = function () {
+            fileReader.onloadend = function (data) {
                 var latin = CryptoJS.enc.Latin1.parse(this.result);
                 var value = CryptoJS.MD5(latin);
                 console.log(value.toString());
+
+                latin = CryptoJS.enc.Latin1.parse(data.explicitOriginalTarget.result);
+                value = CryptoJS.MD5(latin);
+                console.log(value.toString());
             }
 
-            fileReader.readAsBinaryString(document.getElementById('file-test').files[0]);
-            console.log('asd');
-        };
+            fileReader.readAsBinaryString(document.getElementById('file').files[0]);
+            console.log('OK');
+        });
     </script>
 </body>
 
