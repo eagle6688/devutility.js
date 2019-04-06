@@ -8,6 +8,7 @@
     <link href="../../content/styles/common.css" rel="stylesheet" />
     <script src="../../vendors/jquery/jquery-3.3.1.min.js"></script>
     <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../extension/devutility/devutility.js"></script>
     <script src="../../vendors/cropperjs/cropper.min.js"></script>
 </head>
 
@@ -16,16 +17,28 @@
         <h3>cropper.js</h3>
         <hr />
         <h5 class="marginTop20">Preview</h5>
-        <div class="form-row">
-            <img id="img" src="" class="img-fluid" alt="Preview">
+        <div class="row">
+            <div class="col image-workspace">
+                <div class="image-workspace-inner">
+                    <img id="img" src="../../content/images/Henningsvaer.jpg" class="img-fluid" alt="Preview">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="preview clearfix" style="width: 260px; height: 260px;">
+                    <img src="">
+                </div>
+            </div>
         </div>
-        <div class="form-row">
-            <div class="col-2 form-inline">
-                <input id="file" type="file" class="form-control-file" title="Please Select an image" accept="image/*>
+        <div class="row">
+            <div class="input-group col-3">
+                <div class="custom-file form-inline">
+                    <input id="file" type="file" class="custom-file-input" accept="image/*">
+                    <label class="custom-file-label" for="file">Choose image</label>
+                </div>
             </div>
         </div>
     </div>
-    <script src="index.js"></script>
+    <script src=" index.js"></script>
 </body>
 
 </html>
