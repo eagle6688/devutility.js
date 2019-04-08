@@ -22,4 +22,16 @@ module.exports = function (router) {
         result.data = data;
         response.json(result);
     });
+
+    router.get('/system/long-request', function (request, response, next) {
+        var sleep = request.query.sleep;
+
+        if (!sleep) {
+            sleep = 5000;
+        }
+
+        setTimeout(function () {
+            response.json(new OperationResult());
+        }, sleep);
+    });
 };
