@@ -1,3 +1,4 @@
+const http = require('http');
 const OperationResult = require('../models/OperationResult');
 
 module.exports = function (router) {
@@ -33,5 +34,12 @@ module.exports = function (router) {
         setTimeout(function () {
             response.json(new OperationResult());
         }, sleep);
+    });
+
+    router.get('/system/httpstatus', function (request, response, next) {
+        var status = request.query.status;
+        response.statusCode = status;
+        response.statusMessage = http.STATUS_CODES[status];
+        response.end();
     });
 };
