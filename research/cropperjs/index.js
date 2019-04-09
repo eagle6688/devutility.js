@@ -33,10 +33,24 @@ var cropper = new Cropper(image, {
     }
 });
 
+var $modal = $('#div-modal');
+
 $('#file').change(function (event) {
     var file = event.target.files[0];
     $('label[for="file"]').text(file.name);
     var url = devutility.image.getUrl(file);
     image.src = url;
     cropper.replace(url).crop();
+});
+
+$('#btn-getCroppedCanvas').click(function () {
+    var options = {
+        width: ~~$('#txt-width').val(),
+        height: ~~$('#txt-height').val()
+    };
+
+    var result = cropper.getCroppedCanvas(options);
+    console.log(Object.prototype.toString.call(result));
+    $('#div-modal').find('.modal-body').html(result);
+    $('#div-modal').modal('show');
 });
