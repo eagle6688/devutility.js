@@ -46,7 +46,10 @@ $('#file').change(function (event) {
 $('#btn-getCroppedCanvas').click(function () {
     var options = {
         width: ~~$('#txt-width').val(),
-        height: ~~$('#txt-height').val()
+        height: ~~$('#txt-height').val(),
+        maxWidth: 4096,
+        maxHeight: 4096,
+        fillColor: '#fff'
     };
 
     var result = cropper.getCroppedCanvas(options);
