@@ -51,6 +51,7 @@ $('#btn-getCroppedCanvas').click(function () {
 
     var result = cropper.getCroppedCanvas(options);
     console.log(Object.prototype.toString.call(result));
+    console.log(result.toDataURL());
     $('#div-modal').find('.modal-body').html(result);
     $('#div-modal').modal('show');
 });
