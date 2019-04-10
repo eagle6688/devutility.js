@@ -19,11 +19,12 @@ var cropper = new Cropper(image, {
     },
     crop: function (e) {
         var data = e.detail;
-        console.log(e.type);
+        console.log(data);
+
+        $('#txt-width').val(Math.round(data.width));
+        $('#txt-height').val(Math.round(data.height));
         // dataX.value = Math.round(data.x);
         // dataY.value = Math.round(data.y);
-        // dataHeight.value = Math.round(data.height);
-        // dataWidth.value = Math.round(data.width);
         // dataRotate.value = typeof data.rotate !== 'undefined' ? data.rotate : '';
         // dataScaleX.value = typeof data.scaleX !== 'undefined' ? data.scaleX : '';
         // dataScaleY.value = typeof data.scaleY !== 'undefined' ? data.scaleY : '';
@@ -53,7 +54,7 @@ $('#btn-getCroppedCanvas').click(function () {
     };
 
     var result = cropper.getCroppedCanvas(options);
-    var dataUrl = result.toDataURL();
+    var dataUrl = result.toDataURL('image/jpeg');
 
     $('#div-modal').find('.modal-body').html(result);
     $('#div-modal').modal('show');
