@@ -2,6 +2,7 @@ var image = document.getElementById('img');
 
 var cropper = new Cropper(image, {
     viewMode: 1,
+    scalable: false,
     responsive: false,
     aspectRatio: 1 / 1,
     preview: '.preview',
