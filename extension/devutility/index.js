@@ -178,3 +178,7 @@ $('#btn-checkbox-check-all').click(function () {
 $('#btn-checkbox-check-none').click(function () {
     devutility.checkbox.checkAll('cb-devutility', false);
 });
+
+$('#btn-browser-isPc').click(function () {
+    alert(devutility.browser.isPc());
+});

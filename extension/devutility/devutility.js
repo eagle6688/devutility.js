@@ -694,6 +694,29 @@
         return Math.max(document.body ? document.body.scrollHeight : 0, document.documentElement ? document.documentElement.scrollHeight : 0);
     };
 
+    browser.isPc = function () {
+        var userAgent = navigator.userAgent;
+        var agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+
+        for (var i = 0; i < agents.length; i++) {
+            if (userAgent.indexOf(agents[i]) > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    browser.isWeChat = function () {
+        var userAgent = navigator.userAgent.toLowerCase();
+
+        if (userAgent.indexOf('micromessenger') != -1) {
+            return true;
+        }
+
+        return false;
+    };
+
     devutility.browser = browser;
 
     /* browser end */
